@@ -5,9 +5,90 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="assets/Xpenser_Logo.png" type="image/icon type">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <title>Xpenser</title>
 </head>
+
+<?php
+    include "../src/php/koneksi.php";
+
+    if(isset($_POST['signup_action'])){  
+        //cacth the data that has been sent by the user in the signup Form
+        $username = $_POST["username"];
+        $email    = $_POST["email"];
+        $password = $_POST["password"];
+
+        //check if the email is in database
+        $cek = pg_num_rows(pg_query($connection, "SELECT * FROM users WHERE email = '$email'"));
+        
+        //make the user back into the signin page if the signup successful
+        if ($cek == 0) {
+            //insert data into database
+            $insertQuery = pg_query($connection, "INSERT INTO users (username, email, password) VALUES('$username', '$email', '$password')");
+            echo'
+            <script>
+            $(document).ready(function(){
+                swal({
+                    title: "Success",
+                    text: "Your account has been created!!!",
+                    icon: "success",
+                    button: "Ok",
+                })
+            });
+            </script>
+            ';
+        } else {
+            echo'
+            <script>
+            $(document).ready(function(){
+                swal({
+                    title: "Failed",
+                    text: "Email has already been used. Please use another email",
+                    icon: "error",
+                    button: "Ok",
+                })
+            });
+            </script>
+            ';
+        }
+    } else if(isset($_POST['signin_action'])){
+        session_start();
+        include "../src/php/koneksi.php";
+        
+        //cacth the data that has been sent by the user in the signup Form
+        $email    = $_POST["emailSignin"];
+        $password = $_POST["passwordSignin"];
+
+        //select query
+        $query = pg_query(
+                    $connection, 
+                    "SELECT * FROM users WHERE email ='$email' AND password = '$password'"
+                );
+
+        //check if the email and password is in the database
+        $cek = pg_num_rows($query);
+        
+        if($cek != 0){
+            $_SESSION['email'] = $email;
+            header("location: php/dashboard.html");
+            // echo "<script>window.location = 'php/dashboard.html';</script>";
+        } else{
+            echo '
+            <script>
+            $(document).ready(function(){
+                swal({
+                    title: "Failed",
+                    text: "Email or Password is wrong. Please head to Sign Up if you didn\'t have an account",
+                    icon: "error",
+                    button: "Ok",
+                })
+            });
+            </script>
+            ';
+        }
+    }
+?>
 
 <body>
     <div class="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
@@ -149,76 +230,3 @@
 
 </html>
 
-<?php
-    include "../src/php/koneksi.php";
-
-    if(isset($_POST['signup_action'])){  
-        //cacth the data that has been sent by the user in the signup Form
-        $username = $_POST["username"];
-        $email    = $_POST["email"];
-        $password = $_POST["password"];
-
-        //check if the email is in database
-        $cek = pg_num_rows(pg_query($connection, "SELECT * FROM users WHERE email = '$email'"));
-        
-        //make the user back into the signin page if the signup successful
-        if ($cek == 0) {
-            //insert data into database
-            $insertQuery = pg_query($connection, "INSERT INTO users (username, email, password) VALUES('$username', '$email', '$password')");
-            ?> 
-            <script>
-                swal({
-                    title: "Success",
-                    text: "Your account has been created!!!",
-                    icon: "success",
-                    button: "Ok",
-                });
-            </script>
-            <?php
-        } else {
-            ?> 
-            <script>
-                swal({
-                    title: "Failed",
-                    text: "Email has already been used. Please use another email",
-                    icon: "error",
-                    button: "Ok",
-                });
-            </script>
-            <?php
-        }
-    } else if(isset($_POST['signin_action'])){
-        // session_start();
-        include "../src/php/koneksi.php";
-        
-        //cacth the data that has been sent by the user in the signup Form
-        $email    = $_POST["emailSignin"];
-        $password = $_POST["passwordSignin"];
-
-        //select query
-        $query = pg_query(
-                    $connection, 
-                    "SELECT * FROM users WHERE email ='$email' AND password = '$password'"
-                );
-
-        //check if the email and password is in the database
-        $cek = pg_num_rows($query);
-        
-        if($cek != 0){
-            $_SESSION['email'] = $email;
-            // header("location: php/dashboard.html");
-            echo "<script>window.location = 'php/dashboard.html';</script>";
-        } else{
-            ?> 
-            <script>
-                swal({
-                    title: "Failed",
-                    text: "Email or Password is wrong. Please head to Sign Up if you didn\'t have an account",
-                    icon: "error",
-                    button: "Ok",
-                });
-            </script>
-            <?php
-        }
-    }
-?>
