@@ -1,101 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="../css/style.css">
-        <link rel="icon" href="../assets/Xpenser_Logo.png" type="image/icon type">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="../css/style.css" />
+        <link
+            rel="icon"
+            href="../assets/Xpenser_Logo.png"
+            type="image/icon type"
+        />
         <title>Transaction</title>
     </head>
-    <body class="bg-slate-100 dark:bg-gray-800 transition duration-300 transform">
+    <body class="bg-slate-100 dark:bg-slate-800 transition duration-300 transform">
         <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
-        <!-- Sidebar-Start -->
-        <section id="sidebar">
-            <div x-data="{ sidebarOpen: false }" class="flex h-screen bg-gray-200 float-left rounded-r-xl">
-                <div :class="sidebarOpen ? 'block' : 'hidden'" @click="sidebarOpen = false" class="fixed inset-0 z-20 transition-opacity bg-black opacity-50 lg:hidden h-screen"></div>
-                <div :class="sidebarOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'" class="fixed rounded-r-xl inset-y-0 left-0 z-30 w-64 overflow-y-auto transition duration-300 h-screen transform bg-white dark:bg-gray-900 lg:translate-x-0 lg:static lg:inset-0">
-                    <div class="flex items-center justify-center mt-8">
-                        <div class="flex items-center">
-                            <img src="../assets/Xpenser_Logo.png" width="50" alt="XpenseR Logo">
-                            <img src="../assets/XpenseR.png" width="100" alt="">
+        
+            <div x-data="{ sidebarOpen: false }" class="flex h-screen rounded-r-xl">
+                <!-- Sidebar-Start -->
+                <section id="sidebar">
+                    <div :class="sidebarOpen ? 'block' : 'hidden'" @click="sidebarOpen = false" class="fixed inset-0 z-20 transition-opacity bg-black opacity-50 lg:hidden h-screen"></div>
+                    <div :class="sidebarOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'" class="fixed rounded-r-xl inset-y-0 left-0 z-30 w-64 overflow-y-auto transition duration-200 transform bg-white h-screen dark:bg-slate-700 lg:translate-x-0 lg:static lg:inset-0 shadow-xl">
+                        <div class="flex items-center justify-center mt-8">
+                            <div class="flex items-center">
+                                <img src="../assets/Xpenser_Logo.png" width="50" alt="XpenseR Logo">
+                                <img src="../assets/XpenseR.png" width="100" alt="">
+                            </div>
                         </div>
-                    </div>
-                    <nav class="mt-10">
-                        <hr class="to-slate-900 shadow-xl font-bold dark:to-slate-400 opacity-50">
-                        <a class="flex items-center font-semibold px-6 py-2 mt-4 text-black dark:text-white hover:bg-primary hover:opacity-50 rounded-xl mx-5" href="dashboard.html">
-                            <svg fill="#000000" width="24" height="24" viewBox="0 0 24 24" id="dashboard" data-name="Flat Line" xmlns="http://www.w3.org/2000/svg" class="icon flat-line" stroke="#000000">
-                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                <g id="SVGRepo_iconCarrier">
-                                    <path id="secondary" d="M9,12H4a1,1,0,0,1-1-1V4A1,1,0,0,1,4,3H9a1,1,0,0,1,1,1v7A1,1,0,0,1,9,12Zm12,8V13a1,1,0,0,0-1-1H15a1,1,0,0,0-1,1v7a1,1,0,0,0,1,1h5A1,1,0,0,0,21,20Z" style="fill: #0fc266; stroke-width: 2;"></path>
-                                    <path id="primary" d="M21,7V4a1,1,0,0,0-1-1H15a1,1,0,0,0-1,1V7a1,1,0,0,0,1,1h5A1,1,0,0,0,21,7ZM10,20V17a1,1,0,0,0-1-1H4a1,1,0,0,0-1,1v3a1,1,0,0,0,1,1H9A1,1,0,0,0,10,20ZM9,12H4a1,1,0,0,1-1-1V4A1,1,0,0,1,4,3H9a1,1,0,0,1,1,1v7A1,1,0,0,1,9,12Zm12,8V13a1,1,0,0,0-1-1H15a1,1,0,0,0-1,1v7a1,1,0,0,0,1,1h5A1,1,0,0,0,21,20Z" style="fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;" class="stroke-black dark:stroke-white dark:fill-white"></path>
-                                </g>
-                            </svg>
-                            <span class="mx-3">Dashboard</span>
-                        </a>
-                        <hr class="to-slate-900 shadow-xl font-bold dark:to-slate-400 opacity-50 mt-2 w-[85%] mx-auto">
-                        <a class="flex items-center font-semibold px-6 py-2 mt-1 text-black bg-primary mx-5 rounded-xl"
-                            href="transaction.html">
-                            <svg viewBox="0 0 1024 1024" width="24" height="24" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000">
-                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                <g id="SVGRepo_iconCarrier">
-                                    <path d="M533 1024l-147.7-84.8-136.4 78.3h-11.3c-17.3 0-34.2-3.4-50.1-10.1-15.3-6.5-29.1-15.7-40.8-27.6-11.7-11.7-21-25.5-27.5-40.8-6.7-15.9-10.1-32.7-10.1-50.1V128.5c0-17.4 3.4-34.2 10.1-50.1 6.5-15.3 15.8-29.1 27.6-40.8 11.7-11.8 25.5-21 40.8-27.5C203.3 3.4 220.2 0 237.5 0h590.9c17.3 0 34.2 3.4 50.1 10.1 15.3 6.5 29.1 15.7 40.8 27.6 11.7 11.7 21 25.5 27.5 40.8 6.7 15.9 10.1 32.7 10.1 50.1V889c0 17.4-3.4 34.2-10.1 50.1-6.5 15.3-15.8 29.1-27.6 40.8-11.7 11.8-25.5 21-40.8 27.5-15.8 6.7-32.7 10.1-50 10.1h-11.3l-136.4-78.3L533 1024z m147.7-182.6l157.2 90.3c2.5-0.6 5-1.4 7.5-2.4 5.2-2.2 9.9-5.4 13.9-9.4 4.1-4.1 7.2-8.7 9.4-14 2.3-5.3 3.4-11.1 3.4-17V128.5c0-5.9-1.1-11.7-3.4-17-2.2-5.2-5.4-9.9-9.4-13.9-4.1-4.1-8.7-7.2-13.9-9.4-5.4-2.3-11.1-3.4-17-3.4H237.5c-5.9 0-11.6 1.1-17 3.4-5.2 2.2-9.9 5.4-13.9 9.4-4.1 4.1-7.2 8.7-9.4 14-2.3 5.3-3.4 11.1-3.4 17V889c0 5.9 1.1 11.7 3.4 17 2.2 5.2 5.4 9.9 9.4 13.9 4.1 4.1 8.7 7.2 13.9 9.4 2.4 1 4.9 1.8 7.5 2.4l157.2-90.3L533 926.2l147.7-84.8z" fill="#000000" class="dark:fill-white">                                       
+                        <div class="mt-8 mb-1 whitespace-no-wrap border-b border-slate-200 dark:border-slate-600"></div>
+                        <nav class="mt-10">
+                            <a class="flex my-5 items-center font-semibold px-6 py-2 text-black dark:text-white rounded-xl mx-5 hover:bg-primary hover:opacity-50" href="dashboard.html">
+                                <svg fill="#000000" width="24" height="24" viewBox="0 0 24 24" id="dashboard" data-name="Flat Line" xmlns="http://www.w3.org/2000/svg" class="icon flat-line" stroke="#000000">
+                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                    <g id="SVGRepo_iconCarrier">
+                                        <path id="secondary" d="M9,12H4a1,1,0,0,1-1-1V4A1,1,0,0,1,4,3H9a1,1,0,0,1,1,1v7A1,1,0,0,1,9,12Zm12,8V13a1,1,0,0,0-1-1H15a1,1,0,0,0-1,1v7a1,1,0,0,0,1,1h5A1,1,0,0,0,21,20Z" style="fill: #0fc266; stroke-width: 2;"></path>
+                                        <path id="primary" d="M21,7V4a1,1,0,0,0-1-1H15a1,1,0,0,0-1,1V7a1,1,0,0,0,1,1h5A1,1,0,0,0,21,7ZM10,20V17a1,1,0,0,0-1-1H4a1,1,0,0,0-1,1v3a1,1,0,0,0,1,1H9A1,1,0,0,0,10,20ZM9,12H4a1,1,0,0,1-1-1V4A1,1,0,0,1,4,3H9a1,1,0,0,1,1,1v7A1,1,0,0,1,9,12Zm12,8V13a1,1,0,0,0-1-1H15a1,1,0,0,0-1,1v7a1,1,0,0,0,1,1h5A1,1,0,0,0,21,20Z" style="fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;" class="dark:stroke-[#ffffff] dark:stroke-linecap dark:fill-white"></path>
+                                    </g>
+                                </svg>
+                                <span class="mx-3">Dashboard</span>
+                            </a>
+                            <a class="flex my-5 items-center font-semibold px-6 py-2 mt-1 text-white bg-primary shadow-lg shadow-primary/50 rounded-xl mx-5"
+                                href="transaction.html">
+                                <svg viewBox="0 0 1024 1024" width="24" height="24" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000">
+                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                    <g id="SVGRepo_iconCarrier">
+                                        <path d="M533 1024l-147.7-84.8-136.4 78.3h-11.3c-17.3 0-34.2-3.4-50.1-10.1-15.3-6.5-29.1-15.7-40.8-27.6-11.7-11.7-21-25.5-27.5-40.8-6.7-15.9-10.1-32.7-10.1-50.1V128.5c0-17.4 3.4-34.2 10.1-50.1 6.5-15.3 15.8-29.1 27.6-40.8 11.7-11.8 25.5-21 40.8-27.5C203.3 3.4 220.2 0 237.5 0h590.9c17.3 0 34.2 3.4 50.1 10.1 15.3 6.5 29.1 15.7 40.8 27.6 11.7 11.7 21 25.5 27.5 40.8 6.7 15.9 10.1 32.7 10.1 50.1V889c0 17.4-3.4 34.2-10.1 50.1-6.5 15.3-15.8 29.1-27.6 40.8-11.7 11.8-25.5 21-40.8 27.5-15.8 6.7-32.7 10.1-50 10.1h-11.3l-136.4-78.3L533 1024z m147.7-182.6l157.2 90.3c2.5-0.6 5-1.4 7.5-2.4 5.2-2.2 9.9-5.4 13.9-9.4 4.1-4.1 7.2-8.7 9.4-14 2.3-5.3 3.4-11.1 3.4-17V128.5c0-5.9-1.1-11.7-3.4-17-2.2-5.2-5.4-9.9-9.4-13.9-4.1-4.1-8.7-7.2-13.9-9.4-5.4-2.3-11.1-3.4-17-3.4H237.5c-5.9 0-11.6 1.1-17 3.4-5.2 2.2-9.9 5.4-13.9 9.4-4.1 4.1-7.2 8.7-9.4 14-2.3 5.3-3.4 11.1-3.4 17V889c0 5.9 1.1 11.7 3.4 17 2.2 5.2 5.4 9.9 9.4 13.9 4.1 4.1 8.7 7.2 13.9 9.4 2.4 1 4.9 1.8 7.5 2.4l157.2-90.3L533 926.2l147.7-84.8z" fill="#ffffff" class="dark:fill-white"></path>
+                                        <path d="M490.6 310.9H321c-23.4 0-42.4-19-42.4-42.4s19-42.4 42.4-42.4h169.6c23.4 0 42.4 19 42.4 42.4s-19 42.4-42.4 42.4zM702.5 487.6H321c-23.4 0-42.4-19-42.4-42.4s19-42.4 42.4-42.4h381.6c23.4 0 42.4 19 42.4 42.4-0.1 23.4-19 42.4-42.5 42.4z" fill="#1eae2e">
+                                        </path>
+                                    </g>
+                                </svg>
+                                <span class="mx-3">Transaction</span>
+                            </a>
+                            <a class="flex my-5 items-center font-semibold  px-6 py-2 mt-1 text-black dark:text-white rounded-xl mx-5 hover:bg-primary hover:opacity-50"
+                                href="account.html">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-stroke"  width="24" height="24" fill="none" viewBox="0 0 448 512">
+                                    <path fill="black" class="dark:fill-white" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span class="mx-3">Account</span>
+                            </a>
+                        </nav>
+                        <div class="absolute bottom-0 flex justify-center items-center w-full">
+                            <button id="theme-toggle" type="button" class="mr-0 text-slate-700 dark:text-yellow-200 hover:bg-slate-100 dark:hover:bg-slate-700  rounded-lg text-sm p-2.5">
+                                <svg id="theme-toggle-dark-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" ></path>
+                                </svg>
+                                <svg id="theme-toggle-light-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 
+                                    11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                                    fill-rule="evenodd"
+                                    clip-rule="evenodd" >
                                     </path>
-                                    <path d="M490.6 310.9H321c-23.4 0-42.4-19-42.4-42.4s19-42.4 42.4-42.4h169.6c23.4 0 42.4 19 42.4 42.4s-19 42.4-42.4 42.4zM702.5 487.6H321c-23.4 0-42.4-19-42.4-42.4s19-42.4 42.4-42.4h381.6c23.4 0 42.4 19 42.4 42.4-0.1 23.4-19 42.4-42.5 42.4z" fill="#1eae2e">
-                                    </path>
-                                </g>
-                            </svg>
-                            <span class="mx-3">Transaction</span>
-                        </a>
-                        <hr class="to-slate-900 shadow-xl font-bold dark:to-slate-400 opacity-50 mt-2 w-[85%] mx-auto">
-                        <a class="flex items-center font-semibold  px-6 py-2 mt-1 text-black dark:text-white rounded-xl mx-5 hover:bg-primary hover:opacity-50"
-                            href="account.html">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="fill-stroke"  width="24" height="24" fill="none" viewBox="0 0 448 512">
-                                <path fill="black" class="dark:fill-white" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                            <span class="mx-3">Account</span>
-                        </a>
-                        <hr class="to-slate-900 shadow-xl font-bold dark:to-slate-400 opacity-50 mt-2 w-[85%] mx-auto">
-                    </nav>
-                    <div class="absolute bottom-0 flex justify-center items-center w-full">
-                        <button id="theme-toggle" type="button" class="mr-10 xl:mr-0 text-gray-700 dark:text-yellow-200 hover:bg-gray-100 dark:hover:bg-gray-700  rounded-lg text-sm p-2.5">
-                            <svg id="theme-toggle-dark-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" ></path>
-                            </svg>
-                            <svg id="theme-toggle-light-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 
-                                11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
-                                fill-rule="evenodd"
-                                clip-rule="evenodd" >
-                                </path>
-                            </svg>
-                        </button>
-                        <p class="font-semibold dark:text-white"> - Theme Mode</p>
-                    </div>
-                </div>
-                <div class="flex flex-col flex-1 overflow-hidden lg:hidden">
-                    <header class="flex items-center justify-between px-6 py-4 ">
-                        <div class="flex items-center">
-                            <button @click="sidebarOpen = true" class="text-gray-500 focus:outline-none lg:hidden">
-                                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4 6H20M4 12H20M4 18H11" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round"></path>
                                 </svg>
                             </button>
+                            <p class="font-semibold dark:text-white">Theme Mode</p>
                         </div>
-                    </header>
-                </div>
-            </div>
-        </section>
-        <!-- Sidebar-End -->
+                    </div>
+                    <div class="flex flex-col flex-1 overflow-hidden lg:hidden bg-white dark:bg-slate-700 h-screen shadow-xl">
+                        <header class="flex items-center justify-between px-2 py-4 ">
+                            <div class="flex items-center">
+                                <button @click="sidebarOpen = true" class="text-slate-500 dark:text-slate-100 focus:outline-none lg:hidden">
+                                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 6H20M4 12H20M4 18H11" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </header>
+                    </div>
+                </section>
+                <!-- Sidebar-End -->
 
-        <section id="main">
-            <div class="bg-slate-400">
-                <h1>Hello World</h1>
+                <!-- Main-Start -->
+                <section id="main" class="flex-1 overflow-x-hidden overflow-y-auto">
+                    <h1 class="flex justify-center text-center items-center mx-auto text-[10rem]">STILL ON PROGRESS:v</h1>
+                </section>
+                <!-- Main-End -->
             </div>
-        </section>
-
-        <script src="../../src/js/transaction.js"></script>
+            
+            
+        <script src="../../src/js/dashboard.js"></script>
         <script src="../../src/js/main.js"></script>
     </body>
 </html>
