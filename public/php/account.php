@@ -1,3 +1,12 @@
+<?php
+    session_start();
+
+    if(!isset($_SESSION['email'])) {
+        header("Location: ../index.php");
+        exit;
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -144,12 +153,19 @@
                                         </g>
                                     </svg>
                             </div>
+
+                            <?php 
+                                include '../../src/php/koneksi.php';
+                                $data = pg_query($connection, "select * from users");
+                                $d = pg_fetch_array($data);
+                            ?>
+
                             <div class="flex justify-center mx-auto flex-wrap w-full sm:w-1/2 lg:w-1/3">
                                 <div class="mx-auto mt-5 mb-0 lg:mb-2   px-5 py-3 dark:text-slate-100 shadow-lg shadow-primary/50" id="username">
-                                    <h3>Username: Username</h3>
+                                    <h3>Username: <?php echo $d['username']?></h3>
                                 </div>
                                 <div class="mx-auto mt-5 mb-0 lg:mb-2   px-5 py-3 dark:text-slate-100 shadow-lg shadow-primary/50" id="email">
-                                    <h3>Email: UserEmail@gmail.com</h3>
+                                    <h3>Email: <?php echo $d['email']?></h3>
                                 </div>
                             </div>
                         </div>
@@ -166,22 +182,22 @@
                                         <div class="modal-box bg-white dark:bg-slate-600">
                                             <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100 pb-5 text-center border-b ">Change Username!</h3>
                                             <div class="modal-action flex flex-shrink w-full justify-center mx-0">
-                                                <form method="dialog">
-                                                    <div class="w-full" id="changeUsername">
+                                                <form method="POST">
+                                                    <div class="w-full">
                                                         <label class="form-control w-96">
                                                             <div class="label">
                                                                 <span class="label-text font-semibold text-slate-800 dark:text-slate-100">New Username</span>
                                                             </div>
-                                                            <input type="text" placeholder="New Username" required class="input w-full bg-slate-300 dark:bg-slate-100"/>
+                                                            <input type="text" placeholder="New Username" name="username" required class="input w-full bg-slate-300 dark:bg-slate-100"/>
                                                         </label>
                                                         <label class="form-control w-96">
                                                             <div class="label">
                                                                 <span class="label-text font-semibold text-slate-800 dark:text-slate-100">Password</span>
                                                             </div>
-                                                            <input type="password" placeholder="Password" required class="input w-full  bg-slate-300 dark:bg-slate-100" />
+                                                            <input type="password" placeholder="Password" name="password" required class="input w-full  bg-slate-300 dark:bg-slate-100" />
                                                         </label>
                                                         <div class="flex mt-4 justify-between">
-                                                            <button class="btn rounded px-5 border-none py-2.5 overflow-hidden group bg-primary relative hover:bg-gradient-to-r hover:from-green-500 hover:to-green-400 text-white hover:ring-2 hover:ring-offset-2 hover:ring-green-400 transition-all ease-out duration-300 shadow-xl shadow-primary/50" onclick="my_modal_5.showModal()">Save
+                                                            <button name="changeUsername" class="btn rounded px-5 border-none py-2.5 overflow-hidden group bg-primary relative hover:bg-gradient-to-r hover:from-green-500 hover:to-green-400 text-white hover:ring-2 hover:ring-offset-2 hover:ring-green-400 transition-all ease-out duration-300 shadow-xl shadow-primary/50" onclick="my_modal_5.showModal()">Save
                                                                 <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
                                                             </button>
                                                             <a href="account.php" class="btn rounded px-5 border-none py-2.5 overflow-hidden group bg-primary relative hover:bg-gradient-to-r hover:from-green-500 hover:to-green-400 text-white hover:ring-2 hover:ring-offset-2 hover:ring-green-400 transition-all ease-out duration-300 shadow-xl shadow-primary/50" onclick="my_modal_5.showModal()">Cancel
@@ -189,6 +205,21 @@
                                                             </a>
                                                         </div>
                                                     </div>
+
+                                                    <?php 
+                                                        if (isset($_POST['changeUsername'])) {
+                                                            $username = $_POST['username'];
+                                                            $password = $_POST['password'];
+                                                            $email = $_SESSION['email'];
+
+                                                            if ($password === $d['password']) {
+                                                                pg_query($connection, "UPDATE users SET username = '$username' WHERE email = '$email'");
+                                                            echo "<script>window.location.href = 'account.php'</script>";    
+                                                            } else {
+                                                                echo "<script>alert('Wrong PW')</script>";
+                                                            }   
+                                                        }
+                                                    ?>
                                                 </form>
                                             </div>
                                         </div>
@@ -203,22 +234,22 @@
                                         <div class="modal-box bg-white dark:bg-slate-600">
                                             <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100 pb-5 text-center border-b ">Change Password!</h3>
                                             <div class="modal-action flex flex-shrink w-full justify-center mx-0">
-                                                <form method="dialog">
+                                                <form method="POST">
                                                     <div class="w-full" id="changePassword">
                                                         <label class="form-control w-96">
                                                             <div class="label">
                                                                 <span class="label-text font-semibold text-slate-800 dark:text-slate-100">New Password</span>
                                                             </div>
-                                                            <input type="password" placeholder="New Password" required class="input w-full bg-slate-300 dark:bg-slate-100"/>
+                                                            <input type="password" placeholder="New Password" name="newPassword" required class="input w-full bg-slate-300 dark:bg-slate-100"/>
                                                         </label>
                                                         <label class="form-control w-96">
                                                             <div class="label">
                                                                 <span class="label-text font-semibold text-slate-800 dark:text-slate-100">Old Password</span>
                                                             </div>
-                                                            <input type="password" placeholder="Old Password" required class="input w-full  bg-slate-300 dark:bg-slate-100" />
+                                                            <input type="password" placeholder="Old Password" name="oldPassword" required class="input w-full  bg-slate-300 dark:bg-slate-100" />
                                                         </label>
                                                         <div class="flex mt-4 justify-between">
-                                                            <button class="btn rounded px-5 border-none py-2.5 overflow-hidden group bg-primary relative hover:bg-gradient-to-r hover:from-green-500 hover:to-green-400 text-white hover:ring-2 hover:ring-offset-2 hover:ring-green-400 transition-all ease-out duration-300 shadow-xl shadow-primary/50" onclick="my_modal_6.showModal()">Save
+                                                            <button name="changePassword" class="btn rounded px-5 border-none py-2.5 overflow-hidden group bg-primary relative hover:bg-gradient-to-r hover:from-green-500 hover:to-green-400 text-white hover:ring-2 hover:ring-offset-2 hover:ring-green-400 transition-all ease-out duration-300 shadow-xl shadow-primary/50" onclick="my_modal_6.showModal()">Save
                                                                 <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
                                                             </button>
                                                             <a href="account.php" class="btn rounded px-5 border-none py-2.5 overflow-hidden group bg-primary relative hover:bg-gradient-to-r hover:from-green-500 hover:to-green-400 text-white hover:ring-2 hover:ring-offset-2 hover:ring-green-400 transition-all ease-out duration-300 shadow-xl shadow-primary/50" onclick="my_modal_6.showModal()">Cancel
@@ -226,15 +257,36 @@
                                                             </a>
                                                         </div>
                                                     </div>
+
+                                                    <?php 
+                                                        if (isset($_POST['changePassword'])) {
+                                                            $newPassword = $_POST['newPassword'];
+                                                            $oldPassword = $_POST['oldPassword'];
+                                                            $email = $_SESSION['email'];
+
+                                                            if ($oldPassword === $d['password']) {
+                                                                pg_query($connection, "UPDATE users SET password = '$newPassword' WHERE email = '$email'");
+                                                            echo "<script>window.location.href = 'account.php'</script>";    
+                                                            } else {
+                                                                echo "<script>alert('Wrong PW')</script>";
+                                                            }   
+                                                        }
+                                                    ?>
+
                                                 </form>
                                             </div>
                                         </div>
                                     </dialog>
                                 </section>
     
-                                <a href="../index.html" class="btn rounded my-4 px-5 border-none py-2.5 overflow-hidden group bg-primary relative hover:bg-gradient-to-r hover:from-green-500 hover:to-green-400 text-white hover:ring-2 hover:ring-offset-2 hover:ring-green-400 transition-all ease-out duration-300 shadow-xl shadow-primary/50">Log Out
+                                <a href="../index.php" class="btn rounded my-4 px-5 border-none py-2.5 overflow-hidden group bg-primary relative hover:bg-gradient-to-r hover:from-green-500 hover:to-green-400 text-white hover:ring-2 hover:ring-offset-2 hover:ring-green-400 transition-all ease-out duration-300 shadow-xl shadow-primary/50">Log Out
                                     <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
+                                    <?php
+                                        session_destroy();
+                                    ?>
                                 </a>
+
+
                             </div>
                         </div>
 
