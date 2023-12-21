@@ -23,7 +23,7 @@
                         </div>
                         <div class="mt-8 mb-1 whitespace-no-wrap border-b border-slate-200 dark:border-slate-600"></div>
                         <nav class="mt-10">
-                            <a class="flex my-5 items-center font-semibold px-6 py-2 text-black dark:text-white rounded-xl mx-5 hover:bg-primary hover:opacity-50" href="dashboard.html">
+                            <a class="flex my-5 items-center font-semibold px-6 py-2 text-black dark:text-white rounded-xl mx-5 hover:bg-primary hover:opacity-50" href="dashboard.php">
                                 <svg fill="#000000" width="24" height="24" viewBox="0 0 24 24" id="dashboard" data-name="Flat Line" xmlns="http://www.w3.org/2000/svg" class="icon flat-line" stroke="#000000">
                                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                                     <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -35,7 +35,7 @@
                                 <span class="mx-3">Dashboard</span>
                             </a>
                             <a class="flex my-5 items-center font-semibold px-6 py-2 mt-1 text-black dark:text-white rounded-xl mx-5 hover:bg-primary hover:opacity-50"
-                                href="transaction.html">
+                                href="transaction.php">
                                 <svg viewBox="0 0 1024 1024" width="24" height="24" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000">
                                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                                     <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -48,7 +48,7 @@
                                 <span class="mx-3">Transaction</span>
                             </a>
                             <a class="flex my-5 items-center font-semibold  px-6 py-2 mt-1 text-white bg-primary shadow-lg shadow-primary/50 rounded-xl mx-5"
-                                href="account.html">
+                                href="account.php">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="fill-stroke"  width="24" height="24" fill="none" viewBox="0 0 448 512">
                                     <path fill="black" class="fill-white" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
@@ -184,7 +184,7 @@
                                                             <button class="btn rounded px-5 border-none py-2.5 overflow-hidden group bg-primary relative hover:bg-gradient-to-r hover:from-green-500 hover:to-green-400 text-white hover:ring-2 hover:ring-offset-2 hover:ring-green-400 transition-all ease-out duration-300 shadow-xl shadow-primary/50" onclick="my_modal_5.showModal()">Save
                                                                 <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
                                                             </button>
-                                                            <a href="account.html" class="btn rounded px-5 border-none py-2.5 overflow-hidden group bg-primary relative hover:bg-gradient-to-r hover:from-green-500 hover:to-green-400 text-white hover:ring-2 hover:ring-offset-2 hover:ring-green-400 transition-all ease-out duration-300 shadow-xl shadow-primary/50" onclick="my_modal_5.showModal()">Cancel
+                                                            <a href="account.php" class="btn rounded px-5 border-none py-2.5 overflow-hidden group bg-primary relative hover:bg-gradient-to-r hover:from-green-500 hover:to-green-400 text-white hover:ring-2 hover:ring-offset-2 hover:ring-green-400 transition-all ease-out duration-300 shadow-xl shadow-primary/50" onclick="my_modal_5.showModal()">Cancel
                                                                 <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
                                                             </a>
                                                         </div>
@@ -221,7 +221,7 @@
                                                             <button class="btn rounded px-5 border-none py-2.5 overflow-hidden group bg-primary relative hover:bg-gradient-to-r hover:from-green-500 hover:to-green-400 text-white hover:ring-2 hover:ring-offset-2 hover:ring-green-400 transition-all ease-out duration-300 shadow-xl shadow-primary/50" onclick="my_modal_6.showModal()">Save
                                                                 <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
                                                             </button>
-                                                            <a href="account.html" class="btn rounded px-5 border-none py-2.5 overflow-hidden group bg-primary relative hover:bg-gradient-to-r hover:from-green-500 hover:to-green-400 text-white hover:ring-2 hover:ring-offset-2 hover:ring-green-400 transition-all ease-out duration-300 shadow-xl shadow-primary/50" onclick="my_modal_6.showModal()">Cancel
+                                                            <a href="account.php" class="btn rounded px-5 border-none py-2.5 overflow-hidden group bg-primary relative hover:bg-gradient-to-r hover:from-green-500 hover:to-green-400 text-white hover:ring-2 hover:ring-offset-2 hover:ring-green-400 transition-all ease-out duration-300 shadow-xl shadow-primary/50" onclick="my_modal_6.showModal()">Cancel
                                                                 <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
                                                             </a>
                                                         </div>
