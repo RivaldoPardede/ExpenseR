@@ -156,7 +156,8 @@
 
                             <?php 
                                 include '../../src/php/koneksi.php';
-                                $data = pg_query($connection, "select * from users");
+                                $email = $_SESSION['email'];
+                                $data = pg_query($connection, "select * from users WHERE email = '$email'");
                                 $d = pg_fetch_array($data);
                             ?>
 
