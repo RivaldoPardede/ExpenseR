@@ -17,7 +17,7 @@ CREATE TABLE transaksi (
     id SERIAL NOT NULL,
     user_id SERIAL NOT NULL,
     amount BIGINT NOT NULL,
-    transaction_date TIMESTAMP NOT NULL,
+    transaction_date DATE NOT NULL,
     transaction_type VARCHAR(10) NOT NULL,
     description TEXT,
     category_id SERIAL NOT NULL,
@@ -25,3 +25,12 @@ CREATE TABLE transaksi (
     CONSTRAINT FK_user FOREIGN KEY (user_id) REFERENCES users(user_id),
     CONSTRAINT FK_category FOREIGN KEY (category_id) REFERENCES category(id)
 );
+INSERT INTO category (id, category_type)
+    VALUES (1, 'Food/Drink'),
+        (2, 'Transportation'),
+        (3, 'Clothing'),
+        (4, 'Entertainment'),
+        (5, 'Shopping'),
+        (6, 'Health'),
+        (7, 'Technology'),
+        (8, 'Others');

@@ -1,5 +1,33 @@
 <?php
+    session_start();
+    include '../../src/php/koneksi.php';
 
+    if(isset($_SESSION['email'])){
+        $email = $_SESSION['email'];
+        if(isset($_POST["submit"])){
+            //catch all user's inputs into their own variable
+            $category = $_POST["category"];
+
+            $dateString = $_POST["date"];
+            $date = DateTime::createFromFormat('d/m/Y', $dateString);
+            $formattedDate = $date->format('Y-m-d');
+
+            $description = $_POST["description"];
+            $type = $_POST["type"];
+            $amount = $_POST["amount"];
+
+            $searchUserId = pg_query($connection, "SELECT user_id FROM users WHERE email = '$email'");
+            if($searchUserId){
+                //change searchUserId into associative array
+                $row = pg_fetch_assoc($searchUserId);
+                $user_id = $row['user_id'];
+                //insert data into database
+                $insertQuery = pg_query($connection, "INSERT INTO transaksi 
+                    (user_id, amount, transaction_date, transaction_type, description, category_id)
+                    VALUES ('$user_id', '$amount', '$formattedDate', '$type', '$description', '$category')");
+            }
+        }
+    }
 ?>
 
 <!DOCTYPE html>
@@ -209,8 +237,22 @@
                                                     <th class="px-6 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-500 dark:bg-slate-600"></th>
                                                 </tr>
                                             </thead>
-            
+
                                             <tbody class="bg-white dark:bg-slate-600">
+                                            <?php 
+                                                $searchUserId = pg_query($connection, "SELECT user_id FROM users WHERE email = '$email'");
+                                                if($searchUserId):
+                                                    //change searchUserId into associative array
+                                                    $row = pg_fetch_assoc($searchUserId);
+                                                    $user_id = $row['user_id'];
+                                                    $readDataQuery = pg_query($connection, "SELECT * FROM transaksi where user_id = '$user_id'"); 
+                                                    if($readDataQuery):
+                                                        $rows = pg_fetch_all($readDataQuery);
+                                                        foreach($rows as $row):
+                                                        $category_id = $row["category_id"];
+                                                        $searchCategory = pg_query($connection, "SELECT category_type FROM category WHERE id = '$category_id'");
+                                                        $category = pg_fetch_array($searchCategory)[0];?>
+                                                         
                                                 <tr>
                                                     <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
                                                         <div class="flex items-center">
@@ -237,24 +279,34 @@
                                                             </div>
             
                                                             <div class="ml-4">
-                                                                <div class="text-sm font-medium leading-5 dark:text-slate-100">Food/Drink</div>
+                                                                <div class="text-sm font-medium leading-5 dark:text-slate-100"><?= $category; ?></div>
                                                             </div>
                                                         </div>
                                                     </td>
             
                                                     <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <div class="text-sm leading-5 text-slate-900 dark:text-slate-100">Eating Something</div>
-                                                        <div class="text-sm leading-5 dark:text-slate-300 text-slate-500">18-12-2023</div>
+                                                        <div class="text-sm leading-5 text-slate-900 dark:text-slate-100"><?= $row["description"] ?></div>
+                                                        <div class="text-sm leading-5 dark:text-slate-300 text-slate-500">
+                                                            <?php 
+                                                                $oldDateFormat = $row["transaction_date"];
+                                                                $newDateFormat = date("d-m-Y", strtotime($oldDateFormat));
+                                                                echo $newDateFormat;
+                                                            ?>
+                                                        </div>
                                                     </td>
             
                                                     <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
                                                         <span
-                                                            class="inline-flex px-2 text-sm font-semibold leading-5 text-slate-900 bg-rose-200 rounded-full">Expenses</span>
+                                                            class="inline-flex px-2 text-sm font-semibold leading-5 text-slate-900 bg-rose-200 rounded-full"><?= $row["transaction_type"] ?></span>
                                                     </td>
             
                                                     <td
                                                         class="px-6 py-4 text-sm leading-5 text-rose-500 font-semibold whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        Rp. 30,000
+                                                        <?php
+                                                            $oldAmountFormat = $row["amount"];
+                                                            $newFormattedAmount = "Rp. " . number_format($oldAmountFormat, 0, '.', ',');
+                                                            echo $newFormattedAmount;
+                                                        ?>
                                                     </td>
 
                                                     <td
@@ -262,348 +314,12 @@
                                                         <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
                                                     </td>
                                                 </tr>
-                                                <tr>
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <div class="flex items-center">
-                                                            <div class="flex-shrink-0 w-10 h-10">
-                                                                <svg class="w-8 h-8" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512.002 512.002" xml:space="preserve" fill="#000000">
-                                                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                                                    <g id="SVGRepo_iconCarrier"> 
-                                                                        <g> 
-                                                                            <path style="fill:#FCD051;" d="M281.333,394.663l-2.809-44.901l-3.688-59.019c-96.15-9.24-242.833,5.777-242.833,103.92h32H281.333 z"></path> 
-                                                                            <polygon style="fill:#ED8C18;" points="281.333,394.663 64.003,394.663 64.003,437.331 284,437.331 "></polygon> 
-                                                                            <path style="fill:#FCD051;" d="M284,437.331H64.003H42.999c-6.048,0-10.997,4.949-10.997,10.999v21.002 c0,17.601,14.401,32.002,32,32.002H288L284,437.331z"></path> 
-                                                                            <path style="fill:#657694;" d="M281.333,394.663L284,437.331l4,64.002h159.996l6.665-106.676l4.002-63.992 c-132.974,0-134.526-129.659-137.859-170.662h-54.139l8.171,130.741l3.688,59.019L281.333,394.663z"></path> 
-                                                                            <path style="fill:#ABB8B9;" d="M320.804,160.003c3.334,41.003,4.886,170.662,137.859,170.662l10.665-170.662L320.804,160.003 L320.804,160.003z"></path> 
-                                                                            <polygon style="fill:#657694;" points="320.804,160.003 469.33,160.003 480,160.003 469.33,117.333 367.998,117.333 266.665,117.333 256,160.003 266.665,160.003 "></polygon> 
-                                                                        </g>
-                                                                        <g> 
-                                                                            <path style="fill:#000003;" d="M490.348,157.416l-10.67-42.67c-1.187-4.748-5.454-8.08-10.348-8.08h-90.665V88.397l70.184-70.186 c4.165-4.167,4.165-10.921-0.002-15.087c-4.165-4.167-10.919-4.165-15.085,0l-73.31,73.313c-2,2-3.123,4.713-3.123,7.542v22.687 h-90.665c-4.896,0-9.163,3.331-10.351,8.082l-10.665,42.668c-0.796,3.187-0.079,6.563,1.941,9.153 c2.021,2.59,5.124,4.103,8.409,4.103h0.644l6.776,108.416c-74.178-5.321-165.105,4.055-211.248,45.977 c-20.463,18.588-30.836,42.004-30.836,69.6c0,5.889,4.776,10.667,10.667,10.667h21.333v21.333H43 c-11.944,0-21.664,9.719-21.664,21.667v21.002c0,23.529,19.141,42.67,42.668,42.67H288h159.996c5.631,0,10.294-4.381,10.646-10.003 l20.708-331.328h0.647c3.283,0,6.385-1.515,8.407-4.103C490.429,163.978,491.144,160.603,490.348,157.416z M274.993,128h186.009 l5.334,21.335H269.661L274.993,128z M66.517,340.854c41.755-37.937,130.768-45.441,198.245-40.27l2.409,38.512h-43.759 c-5.892,0-10.667,4.776-10.667,10.667s4.776,10.667,10.667,10.667h45.092l1.473,23.566H43.348 C45.556,367.147,53.194,352.958,66.517,340.854z M74.671,405.331h196.641l1.333,21.333H74.671V405.331z M42.67,469.331v-21.002 c0-0.158,0.173-0.332,0.33-0.332h230.978l2.667,42.668H64.003C52.24,490.666,42.67,481.094,42.67,469.331z M298.022,490.666 L278.02,170.67h32.87c1.796,25.154,5.163,65.355,23.746,101.017c22.487,43.155,60.369,66.436,112.694,69.33l-2.686,42.972h-43.732 c-5.892,0-10.667,4.777-10.667,10.667c0,5.892,4.776,10.667,10.667,10.667h42.399l-5.334,85.341H298.022V490.666z M448.66,319.727 c-44.915-2.407-76.091-21.407-95.104-57.897c-16.213-31.117-19.568-67.594-21.276-91.158h125.695L448.66,319.727z"></path> 
-                                                                            <path style="fill:#000003;" d="M192.515,360.434h0.256c5.889,0,10.667-4.776,10.667-10.667s-4.778-10.667-10.667-10.667h-0.256 c-5.892,0-10.667,4.776-10.667,10.667C181.847,355.659,186.622,360.434,192.515,360.434z"></path> 
-                                                                            <path style="fill:#000003;" d="M370.268,383.996h-0.254c-5.892,0-10.667,4.776-10.667,10.667c0,5.889,4.776,10.667,10.667,10.667 h0.254c5.892,0,10.667-4.778,10.667-10.667C380.935,388.772,376.161,383.996,370.268,383.996z"></path> 
-                                                                        </g> 
-                                                                    </g>
-                                                                </svg>
-                                                            </div>
-            
-                                                            <div class="ml-4">
-                                                                <div class="text-sm font-medium leading-5 dark:text-slate-100">Food/Drink</div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-            
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <div class="text-sm leading-5 text-slate-900 dark:text-slate-100">Eating Something</div>
-                                                        <div class="text-sm leading-5 text-slate-500 dark:text-slate-300">18-12-2023</div>
-                                                    </td>
-            
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <span
-                                                            class="inline-flex px-2 text-sm font-semibold leading-5 text-slate-900 bg-rose-200 rounded-full">Expenses</span>
-                                                    </td>
-            
-                                                    <td
-                                                        class="px-6 py-4 text-sm leading-5 text-rose-500 font-semibold whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        Rp. 30,000
-                                                    </td>
-                                                    <td
-                                                        class="px-6 py-4 text-sm font-medium leading-5 text-right whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <div class="flex items-center">
-                                                            <div class="flex-shrink-0 w-10 h-10">
-                                                                <svg class="w-8 h-8" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512.002 512.002" xml:space="preserve" fill="#000000">
-                                                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                                                    <g id="SVGRepo_iconCarrier"> 
-                                                                        <g> 
-                                                                            <path style="fill:#FCD051;" d="M281.333,394.663l-2.809-44.901l-3.688-59.019c-96.15-9.24-242.833,5.777-242.833,103.92h32H281.333 z"></path> 
-                                                                            <polygon style="fill:#ED8C18;" points="281.333,394.663 64.003,394.663 64.003,437.331 284,437.331 "></polygon> 
-                                                                            <path style="fill:#FCD051;" d="M284,437.331H64.003H42.999c-6.048,0-10.997,4.949-10.997,10.999v21.002 c0,17.601,14.401,32.002,32,32.002H288L284,437.331z"></path> 
-                                                                            <path style="fill:#657694;" d="M281.333,394.663L284,437.331l4,64.002h159.996l6.665-106.676l4.002-63.992 c-132.974,0-134.526-129.659-137.859-170.662h-54.139l8.171,130.741l3.688,59.019L281.333,394.663z"></path> 
-                                                                            <path style="fill:#ABB8B9;" d="M320.804,160.003c3.334,41.003,4.886,170.662,137.859,170.662l10.665-170.662L320.804,160.003 L320.804,160.003z"></path> 
-                                                                            <polygon style="fill:#657694;" points="320.804,160.003 469.33,160.003 480,160.003 469.33,117.333 367.998,117.333 266.665,117.333 256,160.003 266.665,160.003 "></polygon> 
-                                                                        </g>
-                                                                        <g> 
-                                                                            <path style="fill:#000003;" d="M490.348,157.416l-10.67-42.67c-1.187-4.748-5.454-8.08-10.348-8.08h-90.665V88.397l70.184-70.186 c4.165-4.167,4.165-10.921-0.002-15.087c-4.165-4.167-10.919-4.165-15.085,0l-73.31,73.313c-2,2-3.123,4.713-3.123,7.542v22.687 h-90.665c-4.896,0-9.163,3.331-10.351,8.082l-10.665,42.668c-0.796,3.187-0.079,6.563,1.941,9.153 c2.021,2.59,5.124,4.103,8.409,4.103h0.644l6.776,108.416c-74.178-5.321-165.105,4.055-211.248,45.977 c-20.463,18.588-30.836,42.004-30.836,69.6c0,5.889,4.776,10.667,10.667,10.667h21.333v21.333H43 c-11.944,0-21.664,9.719-21.664,21.667v21.002c0,23.529,19.141,42.67,42.668,42.67H288h159.996c5.631,0,10.294-4.381,10.646-10.003 l20.708-331.328h0.647c3.283,0,6.385-1.515,8.407-4.103C490.429,163.978,491.144,160.603,490.348,157.416z M274.993,128h186.009 l5.334,21.335H269.661L274.993,128z M66.517,340.854c41.755-37.937,130.768-45.441,198.245-40.27l2.409,38.512h-43.759 c-5.892,0-10.667,4.776-10.667,10.667s4.776,10.667,10.667,10.667h45.092l1.473,23.566H43.348 C45.556,367.147,53.194,352.958,66.517,340.854z M74.671,405.331h196.641l1.333,21.333H74.671V405.331z M42.67,469.331v-21.002 c0-0.158,0.173-0.332,0.33-0.332h230.978l2.667,42.668H64.003C52.24,490.666,42.67,481.094,42.67,469.331z M298.022,490.666 L278.02,170.67h32.87c1.796,25.154,5.163,65.355,23.746,101.017c22.487,43.155,60.369,66.436,112.694,69.33l-2.686,42.972h-43.732 c-5.892,0-10.667,4.777-10.667,10.667c0,5.892,4.776,10.667,10.667,10.667h42.399l-5.334,85.341H298.022V490.666z M448.66,319.727 c-44.915-2.407-76.091-21.407-95.104-57.897c-16.213-31.117-19.568-67.594-21.276-91.158h125.695L448.66,319.727z"></path> 
-                                                                            <path style="fill:#000003;" d="M192.515,360.434h0.256c5.889,0,10.667-4.776,10.667-10.667s-4.778-10.667-10.667-10.667h-0.256 c-5.892,0-10.667,4.776-10.667,10.667C181.847,355.659,186.622,360.434,192.515,360.434z"></path> 
-                                                                            <path style="fill:#000003;" d="M370.268,383.996h-0.254c-5.892,0-10.667,4.776-10.667,10.667c0,5.889,4.776,10.667,10.667,10.667 h0.254c5.892,0,10.667-4.778,10.667-10.667C380.935,388.772,376.161,383.996,370.268,383.996z"></path> 
-                                                                        </g> 
-                                                                    </g>
-                                                                </svg>
-                                                            </div>
-            
-                                                            <div class="ml-4">
-                                                                <div class="text-sm font-medium leading-5 dark:text-slate-100">Food/Drink</div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-            
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <div class="text-sm leading-5 text-slate-900 dark:text-slate-100">Eating Something</div>
-                                                        <div class="text-sm leading-5 text-slate-500 dark:text-slate-300">18-12-2023</div>
-                                                    </td>
-            
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <span
-                                                            class="inline-flex px-2 text-sm font-semibold leading-5 text-slate-900 bg-rose-200 rounded-full">Expenses</span>
-                                                    </td>
-            
-                                                    <td
-                                                        class="px-6 py-4 text-sm leading-5 text-rose-500 font-semibold whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        Rp. 30,000
-                                                    </td>
-                                                    <td
-                                                        class="px-6 py-4 text-sm font-medium leading-5 text-right whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <div class="flex items-center">
-                                                            <div class="flex-shrink-0 w-10 h-10">
-                                                                <svg class="w-8 h-8" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512.002 512.002" xml:space="preserve" fill="#000000">
-                                                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                                                    <g id="SVGRepo_iconCarrier"> 
-                                                                        <g> 
-                                                                            <path style="fill:#FCD051;" d="M281.333,394.663l-2.809-44.901l-3.688-59.019c-96.15-9.24-242.833,5.777-242.833,103.92h32H281.333 z"></path> 
-                                                                            <polygon style="fill:#ED8C18;" points="281.333,394.663 64.003,394.663 64.003,437.331 284,437.331 "></polygon> 
-                                                                            <path style="fill:#FCD051;" d="M284,437.331H64.003H42.999c-6.048,0-10.997,4.949-10.997,10.999v21.002 c0,17.601,14.401,32.002,32,32.002H288L284,437.331z"></path> 
-                                                                            <path style="fill:#657694;" d="M281.333,394.663L284,437.331l4,64.002h159.996l6.665-106.676l4.002-63.992 c-132.974,0-134.526-129.659-137.859-170.662h-54.139l8.171,130.741l3.688,59.019L281.333,394.663z"></path> 
-                                                                            <path style="fill:#ABB8B9;" d="M320.804,160.003c3.334,41.003,4.886,170.662,137.859,170.662l10.665-170.662L320.804,160.003 L320.804,160.003z"></path> 
-                                                                            <polygon style="fill:#657694;" points="320.804,160.003 469.33,160.003 480,160.003 469.33,117.333 367.998,117.333 266.665,117.333 256,160.003 266.665,160.003 "></polygon> 
-                                                                        </g>
-                                                                        <g> 
-                                                                            <path style="fill:#000003;" d="M490.348,157.416l-10.67-42.67c-1.187-4.748-5.454-8.08-10.348-8.08h-90.665V88.397l70.184-70.186 c4.165-4.167,4.165-10.921-0.002-15.087c-4.165-4.167-10.919-4.165-15.085,0l-73.31,73.313c-2,2-3.123,4.713-3.123,7.542v22.687 h-90.665c-4.896,0-9.163,3.331-10.351,8.082l-10.665,42.668c-0.796,3.187-0.079,6.563,1.941,9.153 c2.021,2.59,5.124,4.103,8.409,4.103h0.644l6.776,108.416c-74.178-5.321-165.105,4.055-211.248,45.977 c-20.463,18.588-30.836,42.004-30.836,69.6c0,5.889,4.776,10.667,10.667,10.667h21.333v21.333H43 c-11.944,0-21.664,9.719-21.664,21.667v21.002c0,23.529,19.141,42.67,42.668,42.67H288h159.996c5.631,0,10.294-4.381,10.646-10.003 l20.708-331.328h0.647c3.283,0,6.385-1.515,8.407-4.103C490.429,163.978,491.144,160.603,490.348,157.416z M274.993,128h186.009 l5.334,21.335H269.661L274.993,128z M66.517,340.854c41.755-37.937,130.768-45.441,198.245-40.27l2.409,38.512h-43.759 c-5.892,0-10.667,4.776-10.667,10.667s4.776,10.667,10.667,10.667h45.092l1.473,23.566H43.348 C45.556,367.147,53.194,352.958,66.517,340.854z M74.671,405.331h196.641l1.333,21.333H74.671V405.331z M42.67,469.331v-21.002 c0-0.158,0.173-0.332,0.33-0.332h230.978l2.667,42.668H64.003C52.24,490.666,42.67,481.094,42.67,469.331z M298.022,490.666 L278.02,170.67h32.87c1.796,25.154,5.163,65.355,23.746,101.017c22.487,43.155,60.369,66.436,112.694,69.33l-2.686,42.972h-43.732 c-5.892,0-10.667,4.777-10.667,10.667c0,5.892,4.776,10.667,10.667,10.667h42.399l-5.334,85.341H298.022V490.666z M448.66,319.727 c-44.915-2.407-76.091-21.407-95.104-57.897c-16.213-31.117-19.568-67.594-21.276-91.158h125.695L448.66,319.727z"></path> 
-                                                                            <path style="fill:#000003;" d="M192.515,360.434h0.256c5.889,0,10.667-4.776,10.667-10.667s-4.778-10.667-10.667-10.667h-0.256 c-5.892,0-10.667,4.776-10.667,10.667C181.847,355.659,186.622,360.434,192.515,360.434z"></path> 
-                                                                            <path style="fill:#000003;" d="M370.268,383.996h-0.254c-5.892,0-10.667,4.776-10.667,10.667c0,5.889,4.776,10.667,10.667,10.667 h0.254c5.892,0,10.667-4.778,10.667-10.667C380.935,388.772,376.161,383.996,370.268,383.996z"></path> 
-                                                                        </g> 
-                                                                    </g>
-                                                                </svg>
-                                                            </div>
-            
-                                                            <div class="ml-4">
-                                                                <div class="text-sm font-medium leading-5 dark:text-slate-100">Food/Drink</div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-            
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <div class="text-sm leading-5 text-slate-900 dark:text-slate-100">Eating Something</div>
-                                                        <div class="text-sm leading-5 text-slate-500 dark:text-slate-300">18-12-2023</div>
-                                                    </td>
-            
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <span
-                                                            class="inline-flex px-2 text-sm font-semibold leading-5 text-slate-900 bg-rose-200 rounded-full">Expenses</span>
-                                                    </td>
-            
-                                                    <td
-                                                        class="px-6 py-4 text-sm leading-5 text-rose-500 font-semibold whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        Rp. 30,000
-                                                    </td>
-                                                    <td
-                                                        class="px-6 py-4 text-sm font-medium leading-5 text-right whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <div class="flex items-center">
-                                                            <div class="flex-shrink-0 w-10 h-10">
-                                                                <svg class="w-8 h-8" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512.002 512.002" xml:space="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path style="fill:#FCD051;" d="M281.333,394.663l-2.809-44.901l-3.688-59.019c-96.15-9.24-242.833,5.777-242.833,103.92h32H281.333 z"></path> <polygon style="fill:#ED8C18;" points="281.333,394.663 64.003,394.663 64.003,437.331 284,437.331 "></polygon> <path style="fill:#FCD051;" d="M284,437.331H64.003H42.999c-6.048,0-10.997,4.949-10.997,10.999v21.002 c0,17.601,14.401,32.002,32,32.002H288L284,437.331z"></path> <path style="fill:#657694;" d="M281.333,394.663L284,437.331l4,64.002h159.996l6.665-106.676l4.002-63.992 c-132.974,0-134.526-129.659-137.859-170.662h-54.139l8.171,130.741l3.688,59.019L281.333,394.663z"></path> <path style="fill:#ABB8B9;" d="M320.804,160.003c3.334,41.003,4.886,170.662,137.859,170.662l10.665-170.662L320.804,160.003 L320.804,160.003z"></path> <polygon style="fill:#657694;" points="320.804,160.003 469.33,160.003 480,160.003 469.33,117.333 367.998,117.333 266.665,117.333 256,160.003 266.665,160.003 "></polygon> </g> <g> <path style="fill:#000003;" d="M490.348,157.416l-10.67-42.67c-1.187-4.748-5.454-8.08-10.348-8.08h-90.665V88.397l70.184-70.186 c4.165-4.167,4.165-10.921-0.002-15.087c-4.165-4.167-10.919-4.165-15.085,0l-73.31,73.313c-2,2-3.123,4.713-3.123,7.542v22.687 h-90.665c-4.896,0-9.163,3.331-10.351,8.082l-10.665,42.668c-0.796,3.187-0.079,6.563,1.941,9.153 c2.021,2.59,5.124,4.103,8.409,4.103h0.644l6.776,108.416c-74.178-5.321-165.105,4.055-211.248,45.977 c-20.463,18.588-30.836,42.004-30.836,69.6c0,5.889,4.776,10.667,10.667,10.667h21.333v21.333H43 c-11.944,0-21.664,9.719-21.664,21.667v21.002c0,23.529,19.141,42.67,42.668,42.67H288h159.996c5.631,0,10.294-4.381,10.646-10.003 l20.708-331.328h0.647c3.283,0,6.385-1.515,8.407-4.103C490.429,163.978,491.144,160.603,490.348,157.416z M274.993,128h186.009 l5.334,21.335H269.661L274.993,128z M66.517,340.854c41.755-37.937,130.768-45.441,198.245-40.27l2.409,38.512h-43.759 c-5.892,0-10.667,4.776-10.667,10.667s4.776,10.667,10.667,10.667h45.092l1.473,23.566H43.348 C45.556,367.147,53.194,352.958,66.517,340.854z M74.671,405.331h196.641l1.333,21.333H74.671V405.331z M42.67,469.331v-21.002 c0-0.158,0.173-0.332,0.33-0.332h230.978l2.667,42.668H64.003C52.24,490.666,42.67,481.094,42.67,469.331z M298.022,490.666 L278.02,170.67h32.87c1.796,25.154,5.163,65.355,23.746,101.017c22.487,43.155,60.369,66.436,112.694,69.33l-2.686,42.972h-43.732 c-5.892,0-10.667,4.777-10.667,10.667c0,5.892,4.776,10.667,10.667,10.667h42.399l-5.334,85.341H298.022V490.666z M448.66,319.727 c-44.915-2.407-76.091-21.407-95.104-57.897c-16.213-31.117-19.568-67.594-21.276-91.158h125.695L448.66,319.727z"></path> <path style="fill:#000003;" d="M192.515,360.434h0.256c5.889,0,10.667-4.776,10.667-10.667s-4.778-10.667-10.667-10.667h-0.256 c-5.892,0-10.667,4.776-10.667,10.667C181.847,355.659,186.622,360.434,192.515,360.434z"></path> <path style="fill:#000003;" d="M370.268,383.996h-0.254c-5.892,0-10.667,4.776-10.667,10.667c0,5.889,4.776,10.667,10.667,10.667 h0.254c5.892,0,10.667-4.778,10.667-10.667C380.935,388.772,376.161,383.996,370.268,383.996z"></path> </g> </g></svg>
-                                                            </div>
-            
-                                                            <div class="ml-4">
-                                                                <div class="text-sm font-medium leading-5 dark:text-slate-100">Food/Drink</div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-            
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <div class="text-sm leading-5 text-slate-900 dark:text-slate-100">Eating Something</div>
-                                                        <div class="text-sm leading-5 text-slate-500 dark:text-slate-300">18-12-2023</div>
-                                                    </td>
-            
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <span
-                                                            class="inline-flex px-2 text-sm font-semibold leading-5 text-slate-900 bg-rose-200 rounded-full">Expenses</span>
-                                                    </td>
-            
-                                                    <td
-                                                        class="px-6 py-4 text-sm leading-5 text-rose-500 font-semibold whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        Rp. 30,000
-                                                    </td>
-                                                    <td
-                                                        class="px-6 py-4 text-sm font-medium leading-5 text-right whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <div class="flex items-center">
-                                                            <div class="flex-shrink-0 w-10 h-10">
-                                                                <svg class="w-8 h-8" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512.002 512.002" xml:space="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path style="fill:#FCD051;" d="M281.333,394.663l-2.809-44.901l-3.688-59.019c-96.15-9.24-242.833,5.777-242.833,103.92h32H281.333 z"></path> <polygon style="fill:#ED8C18;" points="281.333,394.663 64.003,394.663 64.003,437.331 284,437.331 "></polygon> <path style="fill:#FCD051;" d="M284,437.331H64.003H42.999c-6.048,0-10.997,4.949-10.997,10.999v21.002 c0,17.601,14.401,32.002,32,32.002H288L284,437.331z"></path> <path style="fill:#657694;" d="M281.333,394.663L284,437.331l4,64.002h159.996l6.665-106.676l4.002-63.992 c-132.974,0-134.526-129.659-137.859-170.662h-54.139l8.171,130.741l3.688,59.019L281.333,394.663z"></path> <path style="fill:#ABB8B9;" d="M320.804,160.003c3.334,41.003,4.886,170.662,137.859,170.662l10.665-170.662L320.804,160.003 L320.804,160.003z"></path> <polygon style="fill:#657694;" points="320.804,160.003 469.33,160.003 480,160.003 469.33,117.333 367.998,117.333 266.665,117.333 256,160.003 266.665,160.003 "></polygon> </g> <g> <path style="fill:#000003;" d="M490.348,157.416l-10.67-42.67c-1.187-4.748-5.454-8.08-10.348-8.08h-90.665V88.397l70.184-70.186 c4.165-4.167,4.165-10.921-0.002-15.087c-4.165-4.167-10.919-4.165-15.085,0l-73.31,73.313c-2,2-3.123,4.713-3.123,7.542v22.687 h-90.665c-4.896,0-9.163,3.331-10.351,8.082l-10.665,42.668c-0.796,3.187-0.079,6.563,1.941,9.153 c2.021,2.59,5.124,4.103,8.409,4.103h0.644l6.776,108.416c-74.178-5.321-165.105,4.055-211.248,45.977 c-20.463,18.588-30.836,42.004-30.836,69.6c0,5.889,4.776,10.667,10.667,10.667h21.333v21.333H43 c-11.944,0-21.664,9.719-21.664,21.667v21.002c0,23.529,19.141,42.67,42.668,42.67H288h159.996c5.631,0,10.294-4.381,10.646-10.003 l20.708-331.328h0.647c3.283,0,6.385-1.515,8.407-4.103C490.429,163.978,491.144,160.603,490.348,157.416z M274.993,128h186.009 l5.334,21.335H269.661L274.993,128z M66.517,340.854c41.755-37.937,130.768-45.441,198.245-40.27l2.409,38.512h-43.759 c-5.892,0-10.667,4.776-10.667,10.667s4.776,10.667,10.667,10.667h45.092l1.473,23.566H43.348 C45.556,367.147,53.194,352.958,66.517,340.854z M74.671,405.331h196.641l1.333,21.333H74.671V405.331z M42.67,469.331v-21.002 c0-0.158,0.173-0.332,0.33-0.332h230.978l2.667,42.668H64.003C52.24,490.666,42.67,481.094,42.67,469.331z M298.022,490.666 L278.02,170.67h32.87c1.796,25.154,5.163,65.355,23.746,101.017c22.487,43.155,60.369,66.436,112.694,69.33l-2.686,42.972h-43.732 c-5.892,0-10.667,4.777-10.667,10.667c0,5.892,4.776,10.667,10.667,10.667h42.399l-5.334,85.341H298.022V490.666z M448.66,319.727 c-44.915-2.407-76.091-21.407-95.104-57.897c-16.213-31.117-19.568-67.594-21.276-91.158h125.695L448.66,319.727z"></path> <path style="fill:#000003;" d="M192.515,360.434h0.256c5.889,0,10.667-4.776,10.667-10.667s-4.778-10.667-10.667-10.667h-0.256 c-5.892,0-10.667,4.776-10.667,10.667C181.847,355.659,186.622,360.434,192.515,360.434z"></path> <path style="fill:#000003;" d="M370.268,383.996h-0.254c-5.892,0-10.667,4.776-10.667,10.667c0,5.889,4.776,10.667,10.667,10.667 h0.254c5.892,0,10.667-4.778,10.667-10.667C380.935,388.772,376.161,383.996,370.268,383.996z"></path> </g> </g></svg>
-                                                            </div>
-            
-                                                            <div class="ml-4">
-                                                                <div class="text-sm font-medium leading-5 dark:text-slate-100">Food/Drink</div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-            
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <div class="text-sm leading-5 text-slate-900 dark:text-slate-100">Eating Something</div>
-                                                        <div class="text-sm leading-5 text-slate-500 dark:text-slate-300">18-12-2023</div>
-                                                    </td>
-            
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <span
-                                                            class="inline-flex px-2 text-sm font-semibold leading-5 text-slate-900 bg-rose-200 rounded-full">Expenses</span>
-                                                    </td>
-            
-                                                    <td
-                                                        class="px-6 py-4 text-sm leading-5 text-rose-500 font-semibold whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        Rp. 30,000
-                                                    </td>
-                                                    <td
-                                                        class="px-6 py-4 text-sm font-medium leading-5 text-right whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <div class="flex items-center">
-                                                            <div class="flex-shrink-0 w-10 h-10">
-                                                                <svg class="w-8 h-8" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512.002 512.002" xml:space="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path style="fill:#FCD051;" d="M281.333,394.663l-2.809-44.901l-3.688-59.019c-96.15-9.24-242.833,5.777-242.833,103.92h32H281.333 z"></path> <polygon style="fill:#ED8C18;" points="281.333,394.663 64.003,394.663 64.003,437.331 284,437.331 "></polygon> <path style="fill:#FCD051;" d="M284,437.331H64.003H42.999c-6.048,0-10.997,4.949-10.997,10.999v21.002 c0,17.601,14.401,32.002,32,32.002H288L284,437.331z"></path> <path style="fill:#657694;" d="M281.333,394.663L284,437.331l4,64.002h159.996l6.665-106.676l4.002-63.992 c-132.974,0-134.526-129.659-137.859-170.662h-54.139l8.171,130.741l3.688,59.019L281.333,394.663z"></path> <path style="fill:#ABB8B9;" d="M320.804,160.003c3.334,41.003,4.886,170.662,137.859,170.662l10.665-170.662L320.804,160.003 L320.804,160.003z"></path> <polygon style="fill:#657694;" points="320.804,160.003 469.33,160.003 480,160.003 469.33,117.333 367.998,117.333 266.665,117.333 256,160.003 266.665,160.003 "></polygon> </g> <g> <path style="fill:#000003;" d="M490.348,157.416l-10.67-42.67c-1.187-4.748-5.454-8.08-10.348-8.08h-90.665V88.397l70.184-70.186 c4.165-4.167,4.165-10.921-0.002-15.087c-4.165-4.167-10.919-4.165-15.085,0l-73.31,73.313c-2,2-3.123,4.713-3.123,7.542v22.687 h-90.665c-4.896,0-9.163,3.331-10.351,8.082l-10.665,42.668c-0.796,3.187-0.079,6.563,1.941,9.153 c2.021,2.59,5.124,4.103,8.409,4.103h0.644l6.776,108.416c-74.178-5.321-165.105,4.055-211.248,45.977 c-20.463,18.588-30.836,42.004-30.836,69.6c0,5.889,4.776,10.667,10.667,10.667h21.333v21.333H43 c-11.944,0-21.664,9.719-21.664,21.667v21.002c0,23.529,19.141,42.67,42.668,42.67H288h159.996c5.631,0,10.294-4.381,10.646-10.003 l20.708-331.328h0.647c3.283,0,6.385-1.515,8.407-4.103C490.429,163.978,491.144,160.603,490.348,157.416z M274.993,128h186.009 l5.334,21.335H269.661L274.993,128z M66.517,340.854c41.755-37.937,130.768-45.441,198.245-40.27l2.409,38.512h-43.759 c-5.892,0-10.667,4.776-10.667,10.667s4.776,10.667,10.667,10.667h45.092l1.473,23.566H43.348 C45.556,367.147,53.194,352.958,66.517,340.854z M74.671,405.331h196.641l1.333,21.333H74.671V405.331z M42.67,469.331v-21.002 c0-0.158,0.173-0.332,0.33-0.332h230.978l2.667,42.668H64.003C52.24,490.666,42.67,481.094,42.67,469.331z M298.022,490.666 L278.02,170.67h32.87c1.796,25.154,5.163,65.355,23.746,101.017c22.487,43.155,60.369,66.436,112.694,69.33l-2.686,42.972h-43.732 c-5.892,0-10.667,4.777-10.667,10.667c0,5.892,4.776,10.667,10.667,10.667h42.399l-5.334,85.341H298.022V490.666z M448.66,319.727 c-44.915-2.407-76.091-21.407-95.104-57.897c-16.213-31.117-19.568-67.594-21.276-91.158h125.695L448.66,319.727z"></path> <path style="fill:#000003;" d="M192.515,360.434h0.256c5.889,0,10.667-4.776,10.667-10.667s-4.778-10.667-10.667-10.667h-0.256 c-5.892,0-10.667,4.776-10.667,10.667C181.847,355.659,186.622,360.434,192.515,360.434z"></path> <path style="fill:#000003;" d="M370.268,383.996h-0.254c-5.892,0-10.667,4.776-10.667,10.667c0,5.889,4.776,10.667,10.667,10.667 h0.254c5.892,0,10.667-4.778,10.667-10.667C380.935,388.772,376.161,383.996,370.268,383.996z"></path> </g> </g></svg>
-                                                            </div>
-            
-                                                            <div class="ml-4">
-                                                                <div class="text-sm font-medium leading-5 dark:text-slate-100">Food/Drink</div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-            
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <div class="text-sm leading-5 text-slate-900 dark:text-slate-100">Eating Something</div>
-                                                        <div class="text-sm leading-5 text-slate-500 dark:text-slate-300">18-12-2023</div>
-                                                    </td>
-            
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <span
-                                                            class="inline-flex px-2 text-sm font-semibold leading-5 text-slate-900 bg-rose-200 rounded-full">Expenses</span>
-                                                    </td>
-            
-                                                    <td
-                                                        class="px-6 py-4 text-sm leading-5 text-rose-500 font-semibold whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        Rp. 30,000
-                                                    </td>
-                                                    <td
-                                                        class="px-6 py-4 text-sm font-medium leading-5 text-right whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <div class="flex items-center">
-                                                            <div class="flex-shrink-0 w-10 h-10">
-                                                                <svg class="w-8 h-8" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512.002 512.002" xml:space="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path style="fill:#FCD051;" d="M281.333,394.663l-2.809-44.901l-3.688-59.019c-96.15-9.24-242.833,5.777-242.833,103.92h32H281.333 z"></path> <polygon style="fill:#ED8C18;" points="281.333,394.663 64.003,394.663 64.003,437.331 284,437.331 "></polygon> <path style="fill:#FCD051;" d="M284,437.331H64.003H42.999c-6.048,0-10.997,4.949-10.997,10.999v21.002 c0,17.601,14.401,32.002,32,32.002H288L284,437.331z"></path> <path style="fill:#657694;" d="M281.333,394.663L284,437.331l4,64.002h159.996l6.665-106.676l4.002-63.992 c-132.974,0-134.526-129.659-137.859-170.662h-54.139l8.171,130.741l3.688,59.019L281.333,394.663z"></path> <path style="fill:#ABB8B9;" d="M320.804,160.003c3.334,41.003,4.886,170.662,137.859,170.662l10.665-170.662L320.804,160.003 L320.804,160.003z"></path> <polygon style="fill:#657694;" points="320.804,160.003 469.33,160.003 480,160.003 469.33,117.333 367.998,117.333 266.665,117.333 256,160.003 266.665,160.003 "></polygon> </g> <g> <path style="fill:#000003;" d="M490.348,157.416l-10.67-42.67c-1.187-4.748-5.454-8.08-10.348-8.08h-90.665V88.397l70.184-70.186 c4.165-4.167,4.165-10.921-0.002-15.087c-4.165-4.167-10.919-4.165-15.085,0l-73.31,73.313c-2,2-3.123,4.713-3.123,7.542v22.687 h-90.665c-4.896,0-9.163,3.331-10.351,8.082l-10.665,42.668c-0.796,3.187-0.079,6.563,1.941,9.153 c2.021,2.59,5.124,4.103,8.409,4.103h0.644l6.776,108.416c-74.178-5.321-165.105,4.055-211.248,45.977 c-20.463,18.588-30.836,42.004-30.836,69.6c0,5.889,4.776,10.667,10.667,10.667h21.333v21.333H43 c-11.944,0-21.664,9.719-21.664,21.667v21.002c0,23.529,19.141,42.67,42.668,42.67H288h159.996c5.631,0,10.294-4.381,10.646-10.003 l20.708-331.328h0.647c3.283,0,6.385-1.515,8.407-4.103C490.429,163.978,491.144,160.603,490.348,157.416z M274.993,128h186.009 l5.334,21.335H269.661L274.993,128z M66.517,340.854c41.755-37.937,130.768-45.441,198.245-40.27l2.409,38.512h-43.759 c-5.892,0-10.667,4.776-10.667,10.667s4.776,10.667,10.667,10.667h45.092l1.473,23.566H43.348 C45.556,367.147,53.194,352.958,66.517,340.854z M74.671,405.331h196.641l1.333,21.333H74.671V405.331z M42.67,469.331v-21.002 c0-0.158,0.173-0.332,0.33-0.332h230.978l2.667,42.668H64.003C52.24,490.666,42.67,481.094,42.67,469.331z M298.022,490.666 L278.02,170.67h32.87c1.796,25.154,5.163,65.355,23.746,101.017c22.487,43.155,60.369,66.436,112.694,69.33l-2.686,42.972h-43.732 c-5.892,0-10.667,4.777-10.667,10.667c0,5.892,4.776,10.667,10.667,10.667h42.399l-5.334,85.341H298.022V490.666z M448.66,319.727 c-44.915-2.407-76.091-21.407-95.104-57.897c-16.213-31.117-19.568-67.594-21.276-91.158h125.695L448.66,319.727z"></path> <path style="fill:#000003;" d="M192.515,360.434h0.256c5.889,0,10.667-4.776,10.667-10.667s-4.778-10.667-10.667-10.667h-0.256 c-5.892,0-10.667,4.776-10.667,10.667C181.847,355.659,186.622,360.434,192.515,360.434z"></path> <path style="fill:#000003;" d="M370.268,383.996h-0.254c-5.892,0-10.667,4.776-10.667,10.667c0,5.889,4.776,10.667,10.667,10.667 h0.254c5.892,0,10.667-4.778,10.667-10.667C380.935,388.772,376.161,383.996,370.268,383.996z"></path> </g> </g></svg>
-                                                            </div>
-            
-                                                            <div class="ml-4">
-                                                                <div class="text-sm font-medium leading-5 dark:text-slate-100">Food/Drink</div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-            
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <div class="text-sm leading-5 text-slate-900 dark:text-slate-100">Eating Something</div>
-                                                        <div class="text-sm leading-5 text-slate-500 dark:text-slate-300">18-12-2023</div>
-                                                    </td>
-            
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <span
-                                                            class="inline-flex px-2 text-sm font-semibold leading-5 text-slate-900 bg-rose-200 rounded-full">Expenses</span>
-                                                    </td>
-            
-                                                    <td
-                                                        class="px-6 py-4 text-sm leading-5 text-rose-500 font-semibold whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        Rp. 30,000
-                                                    </td>
-                                                    <td
-                                                        class="px-6 py-4 text-sm font-medium leading-5 text-right whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <div class="flex items-center">
-                                                            <div class="flex-shrink-0 w-10 h-10">
-                                                                <svg class="w-8 h-8" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512.002 512.002" xml:space="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path style="fill:#FCD051;" d="M281.333,394.663l-2.809-44.901l-3.688-59.019c-96.15-9.24-242.833,5.777-242.833,103.92h32H281.333 z"></path> <polygon style="fill:#ED8C18;" points="281.333,394.663 64.003,394.663 64.003,437.331 284,437.331 "></polygon> <path style="fill:#FCD051;" d="M284,437.331H64.003H42.999c-6.048,0-10.997,4.949-10.997,10.999v21.002 c0,17.601,14.401,32.002,32,32.002H288L284,437.331z"></path> <path style="fill:#657694;" d="M281.333,394.663L284,437.331l4,64.002h159.996l6.665-106.676l4.002-63.992 c-132.974,0-134.526-129.659-137.859-170.662h-54.139l8.171,130.741l3.688,59.019L281.333,394.663z"></path> <path style="fill:#ABB8B9;" d="M320.804,160.003c3.334,41.003,4.886,170.662,137.859,170.662l10.665-170.662L320.804,160.003 L320.804,160.003z"></path> <polygon style="fill:#657694;" points="320.804,160.003 469.33,160.003 480,160.003 469.33,117.333 367.998,117.333 266.665,117.333 256,160.003 266.665,160.003 "></polygon> </g> <g> <path style="fill:#000003;" d="M490.348,157.416l-10.67-42.67c-1.187-4.748-5.454-8.08-10.348-8.08h-90.665V88.397l70.184-70.186 c4.165-4.167,4.165-10.921-0.002-15.087c-4.165-4.167-10.919-4.165-15.085,0l-73.31,73.313c-2,2-3.123,4.713-3.123,7.542v22.687 h-90.665c-4.896,0-9.163,3.331-10.351,8.082l-10.665,42.668c-0.796,3.187-0.079,6.563,1.941,9.153 c2.021,2.59,5.124,4.103,8.409,4.103h0.644l6.776,108.416c-74.178-5.321-165.105,4.055-211.248,45.977 c-20.463,18.588-30.836,42.004-30.836,69.6c0,5.889,4.776,10.667,10.667,10.667h21.333v21.333H43 c-11.944,0-21.664,9.719-21.664,21.667v21.002c0,23.529,19.141,42.67,42.668,42.67H288h159.996c5.631,0,10.294-4.381,10.646-10.003 l20.708-331.328h0.647c3.283,0,6.385-1.515,8.407-4.103C490.429,163.978,491.144,160.603,490.348,157.416z M274.993,128h186.009 l5.334,21.335H269.661L274.993,128z M66.517,340.854c41.755-37.937,130.768-45.441,198.245-40.27l2.409,38.512h-43.759 c-5.892,0-10.667,4.776-10.667,10.667s4.776,10.667,10.667,10.667h45.092l1.473,23.566H43.348 C45.556,367.147,53.194,352.958,66.517,340.854z M74.671,405.331h196.641l1.333,21.333H74.671V405.331z M42.67,469.331v-21.002 c0-0.158,0.173-0.332,0.33-0.332h230.978l2.667,42.668H64.003C52.24,490.666,42.67,481.094,42.67,469.331z M298.022,490.666 L278.02,170.67h32.87c1.796,25.154,5.163,65.355,23.746,101.017c22.487,43.155,60.369,66.436,112.694,69.33l-2.686,42.972h-43.732 c-5.892,0-10.667,4.777-10.667,10.667c0,5.892,4.776,10.667,10.667,10.667h42.399l-5.334,85.341H298.022V490.666z M448.66,319.727 c-44.915-2.407-76.091-21.407-95.104-57.897c-16.213-31.117-19.568-67.594-21.276-91.158h125.695L448.66,319.727z"></path> <path style="fill:#000003;" d="M192.515,360.434h0.256c5.889,0,10.667-4.776,10.667-10.667s-4.778-10.667-10.667-10.667h-0.256 c-5.892,0-10.667,4.776-10.667,10.667C181.847,355.659,186.622,360.434,192.515,360.434z"></path> <path style="fill:#000003;" d="M370.268,383.996h-0.254c-5.892,0-10.667,4.776-10.667,10.667c0,5.889,4.776,10.667,10.667,10.667 h0.254c5.892,0,10.667-4.778,10.667-10.667C380.935,388.772,376.161,383.996,370.268,383.996z"></path> </g> </g></svg>
-                                                            </div>
-            
-                                                            <div class="ml-4">
-                                                                <div class="text-sm font-medium leading-5 dark:text-slate-100">Food/Drink</div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-            
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <div class="text-sm leading-5 text-slate-900 dark:text-slate-100">Eating Something</div>
-                                                        <div class="text-sm leading-5 text-slate-500 dark:text-slate-300">18-12-2023</div>
-                                                    </td>
-            
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <span
-                                                            class="inline-flex px-2 text-sm font-semibold leading-5 text-slate-900 bg-rose-200 rounded-full">Expenses</span>
-                                                    </td>
-            
-                                                    <td
-                                                        class="px-6 py-4 text-sm leading-5 text-rose-500 font-semibold whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        Rp. 30,000
-                                                    </td>
-                                                    <td
-                                                        class="px-6 py-4 text-sm font-medium leading-5 text-right whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <div class="flex items-center">
-                                                            <div class="flex-shrink-0 w-10 h-10">
-                                                                <svg class="w-8 h-8" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512.002 512.002" xml:space="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path style="fill:#FCD051;" d="M281.333,394.663l-2.809-44.901l-3.688-59.019c-96.15-9.24-242.833,5.777-242.833,103.92h32H281.333 z"></path> <polygon style="fill:#ED8C18;" points="281.333,394.663 64.003,394.663 64.003,437.331 284,437.331 "></polygon> <path style="fill:#FCD051;" d="M284,437.331H64.003H42.999c-6.048,0-10.997,4.949-10.997,10.999v21.002 c0,17.601,14.401,32.002,32,32.002H288L284,437.331z"></path> <path style="fill:#657694;" d="M281.333,394.663L284,437.331l4,64.002h159.996l6.665-106.676l4.002-63.992 c-132.974,0-134.526-129.659-137.859-170.662h-54.139l8.171,130.741l3.688,59.019L281.333,394.663z"></path> <path style="fill:#ABB8B9;" d="M320.804,160.003c3.334,41.003,4.886,170.662,137.859,170.662l10.665-170.662L320.804,160.003 L320.804,160.003z"></path> <polygon style="fill:#657694;" points="320.804,160.003 469.33,160.003 480,160.003 469.33,117.333 367.998,117.333 266.665,117.333 256,160.003 266.665,160.003 "></polygon> </g> <g> <path style="fill:#000003;" d="M490.348,157.416l-10.67-42.67c-1.187-4.748-5.454-8.08-10.348-8.08h-90.665V88.397l70.184-70.186 c4.165-4.167,4.165-10.921-0.002-15.087c-4.165-4.167-10.919-4.165-15.085,0l-73.31,73.313c-2,2-3.123,4.713-3.123,7.542v22.687 h-90.665c-4.896,0-9.163,3.331-10.351,8.082l-10.665,42.668c-0.796,3.187-0.079,6.563,1.941,9.153 c2.021,2.59,5.124,4.103,8.409,4.103h0.644l6.776,108.416c-74.178-5.321-165.105,4.055-211.248,45.977 c-20.463,18.588-30.836,42.004-30.836,69.6c0,5.889,4.776,10.667,10.667,10.667h21.333v21.333H43 c-11.944,0-21.664,9.719-21.664,21.667v21.002c0,23.529,19.141,42.67,42.668,42.67H288h159.996c5.631,0,10.294-4.381,10.646-10.003 l20.708-331.328h0.647c3.283,0,6.385-1.515,8.407-4.103C490.429,163.978,491.144,160.603,490.348,157.416z M274.993,128h186.009 l5.334,21.335H269.661L274.993,128z M66.517,340.854c41.755-37.937,130.768-45.441,198.245-40.27l2.409,38.512h-43.759 c-5.892,0-10.667,4.776-10.667,10.667s4.776,10.667,10.667,10.667h45.092l1.473,23.566H43.348 C45.556,367.147,53.194,352.958,66.517,340.854z M74.671,405.331h196.641l1.333,21.333H74.671V405.331z M42.67,469.331v-21.002 c0-0.158,0.173-0.332,0.33-0.332h230.978l2.667,42.668H64.003C52.24,490.666,42.67,481.094,42.67,469.331z M298.022,490.666 L278.02,170.67h32.87c1.796,25.154,5.163,65.355,23.746,101.017c22.487,43.155,60.369,66.436,112.694,69.33l-2.686,42.972h-43.732 c-5.892,0-10.667,4.777-10.667,10.667c0,5.892,4.776,10.667,10.667,10.667h42.399l-5.334,85.341H298.022V490.666z M448.66,319.727 c-44.915-2.407-76.091-21.407-95.104-57.897c-16.213-31.117-19.568-67.594-21.276-91.158h125.695L448.66,319.727z"></path> <path style="fill:#000003;" d="M192.515,360.434h0.256c5.889,0,10.667-4.776,10.667-10.667s-4.778-10.667-10.667-10.667h-0.256 c-5.892,0-10.667,4.776-10.667,10.667C181.847,355.659,186.622,360.434,192.515,360.434z"></path> <path style="fill:#000003;" d="M370.268,383.996h-0.254c-5.892,0-10.667,4.776-10.667,10.667c0,5.889,4.776,10.667,10.667,10.667 h0.254c5.892,0,10.667-4.778,10.667-10.667C380.935,388.772,376.161,383.996,370.268,383.996z"></path> </g> </g></svg>
-                                                            </div>
-            
-                                                            <div class="ml-4">
-                                                                <div class="text-sm font-medium leading-5 dark:text-slate-100">Food/Drink</div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-            
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <div class="text-sm leading-5 text-slate-900 dark:text-slate-100">Eating Something</div>
-                                                        <div class="text-sm leading-5 text-slate-500 dark:text-slate-300">18-12-2023</div>
-                                                    </td>
-            
-                                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <span
-                                                            class="inline-flex px-2 text-sm font-semibold leading-5 text-slate-900 bg-rose-200 rounded-full">Expenses</span>
-                                                    </td>
-            
-                                                    <td
-                                                        class="px-6 py-4 text-sm leading-5 text-rose-500 font-semibold whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        Rp. 30,000
-                                                    </td>
-                                                    <td
-                                                        class="px-6 py-4 text-sm font-medium leading-5 text-right whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                                                    </td>
-                                                </tr>
+                                            <?php   
+                                                        endforeach;
+                                                    endif;
+                                                endif;
+                                            ?>
+                                                
                                             </tbody>
                                         </table>
                                     </div>
@@ -614,26 +330,26 @@
                             <div :class="transactionForm ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'" class="min-h-screen h-screen w-full inline-block absolute align-middle top-[30%] bg-transparent sm:p-12 max-w-full items-center">
                                 <div class=" max-w-md px-6 py-12 bg-white dark:bg-slate-600 border-0 shadow-xl z-50  mx-auto rounded-xl sm:rounded-3xl">
                                     <h1 class="text-2xl font-bold mb-8 text-center dark:text-slate-100">Add Transaction</h1>
-                                    <form id="form">
+                                    <form id="form" method="post" action="">
                                         <!-- Category-Start -->
                                         <div class="relative z-0 w-full mb-5">
                                             <select
-                                                name="select"
+                                                name="category"
                                                 value=""
                                                 onclick="this.setAttribute('value', this.value);"
                                                 required
                                                 autocomplete="false"
                                                 class="pt-3 pb-2 block w-full px-0 mt-0 border-0 border-b-2 bg-transparent appearance-none z-1 focus:outline-none focus:ring-0 focus:border-black dark:focus:border-white border-gray-200"
                                             >
-                                                <option value="" selected disabled hidden></option>
-                                                <option value="1">Food/Drink</option>
-                                                <option value="2">Transportation</option>
-                                                <option value="3">Clothing</option>
-                                                <option value="4">Entertainment</option>
-                                                <option value="5">Shoping</option>
-                                                <option value="6">Health</option>
-                                                <option value="7">Technology</option>
-                                                <option value="8">Others</option>
+                                            <option value="" selected disabled hidden></option>
+                                            <?php
+                                                $category = pg_fetch_all(pg_query($connection, 'SELECT * FROM category'));
+                                                foreach( $category as $row ){
+                                                    ?>
+                                                    <option value="<?= $row['id'] ?>"><?=$row['category_type']?></option>
+                                                    <?php
+                                                }
+                                            ?>
                                             </select>
                                             <label for="select" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500 dark:text-slate-100" dark:text-slate-100>Category</label>
                                         </div>
@@ -661,6 +377,7 @@
                                             <input
                                                 type=""
                                                 required
+                                                name="date"
                                                 autocomplete="off"
                                                 class="block w-full bg-transparent pt-3 pb-2 px-0 mt-0 border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 dark:text-white focus:border-black dark:focus:border-white border-gray-200 peer-focus:text-primary"
                                                 placeholder=""/>
@@ -685,15 +402,15 @@
                                         <!-- Type-Start -->
                                         <div class="relative z-0 w-full mb-5">
                                             <select
-                                                name="select"
+                                                name="type"
                                                 value=""
                                                 onclick="this.setAttribute('value', this.value);"
                                                 required
                                                 autocomplete="off"
                                                 class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none z-1 focus:outline-none focus:ring-0 focus:border-black dark:focus:border-white border-gray-200">
                                                 <option value="" selected disabled hidden></option>
-                                                <option value="1">Expense</option>
-                                                <option value="2">Income</option>
+                                                <option value="Expense">Expense</option>
+                                                <option value="Income">Income</option>
                                             </select>
                                             <label for="select" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500 dark:text-slate-100">Type</label>
                                         </div>
@@ -703,7 +420,7 @@
                                         <div class="relative z-0 w-full mb-5">
                                             <input
                                                 type="number"
-                                                name="money"
+                                                name="amount"
                                                 placeholder=" "
                                                 required
                                                 autocomplete="off"
@@ -717,6 +434,7 @@
                                         <button 
                                             id="button"
                                             type="submit"
+                                            name="submit"
                                             class="rounded w-full px-6 py-3 overflow-hidden group text-lg bg-primary shadow-lg shadow-primary/50 relative hover:bg-gradient-to-r hover:from-primary hover:to-green-500 text-white hover:ring-2 hover:ring-offset-2 hover:ring-green-400 transition-all ease-out duration-300">
                                             <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-[28rem] ease"></span>
                                             <span class="relative">Add</span>
