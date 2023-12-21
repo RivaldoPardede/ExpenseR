@@ -6,3 +6,22 @@ CREATE TABLE users (
     password VARCHAR(50) NOT NULL    
 );
 
+CREATE TABLE category(
+    id SERIAL NOT NULL,
+    category_type VARCHAR(25) NOT NULL,
+);
+
+ALTER TABLE category ADD CONSTRAINT primary_key PRIMARY KEY(id);
+
+CREATE TABLE transaksi (
+    id SERIAL NOT NULL,
+    user_id SERIAL NOT NULL,
+    amount BIGINT NOT NULL,
+    transaction_date TIMESTAMP NOT NULL,
+    transaction_type VARCHAR(10) NOT NULL,
+    description TEXT,
+    category_id SERIAL NOT NULL,
+    PRIMARY KEY(id),
+    CONSTRAINT FK_user FOREIGN KEY (user_id) REFERENCES users(user_id),
+    CONSTRAINT FK_category FOREIGN KEY (category_id) REFERENCES category(id)
+);
