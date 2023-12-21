@@ -71,7 +71,7 @@
         
         if($cek != 0){
             $_SESSION['email'] = $email;
-            header("location: php/dashboard.html");
+            header("location: php/dashboard.php");
             // echo "<script>window.location = 'php/dashboard.html';</script>";
         } else{
             echo '
