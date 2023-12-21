@@ -158,7 +158,40 @@
             
                                             <div class="mx-5">
                                                 <h4 class="text-[15px] font-bold text-slate-700 dark:text-slate-100">Total Balance</h4>
-                                                <div class="text-green-500 font-semibold">Rp.1,000,000,000</div>
+                                                <?php    
+                                                    $searchUserId = pg_query($connection, "SELECT user_id FROM users WHERE email = '$email'");
+                                                    if($searchUserId):
+                                                        //change searchUserId into associative array
+                                                        $userRow = pg_fetch_assoc($searchUserId);
+                                                        $user_id = $userRow['user_id'];
+
+                                                        //search data 'amount' with user_id same as the email
+                                                        $readDataQuery = pg_query($connection, "SELECT transaction_type, amount FROM transaksi 
+                                                            WHERE user_id = '$user_id'");
+                                                        $rows = pg_fetch_all($readDataQuery);
+
+                                                        //add total amount of all transaction that fits the criteria
+                                                        $total = 0;
+                                                        if(!empty($rows)):
+                                                            foreach($rows as $row):
+                                                                if($row["transaction_type"] == "Expense"):
+                                                                    $total -= $row["amount"];
+                                                            
+                                                                elseif($row["transaction_type"] == "Income"):
+                                                                    $total += $row["amount"];
+                                                                endif;
+                                                            endforeach;
+                                                        endif;
+
+                                                        $formattedTotal = "Rp. " . number_format($total, 0, '.', ',');
+                                                ?>
+                                                
+                                                <div class="text-<?php if($total >= 0){echo "green";} else{echo "rose";} ?>-500 font-semibold">
+                                                <?php
+                                                        echo $formattedTotal;
+                                                    endif;           
+                                                ?>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -183,8 +216,36 @@
                                             </div>
             
                                             <div class="mx-5 w-fit">
-                                                <h4 class="text-[15px] font-bold text-slate-700 dark:text-slate-100">December Expenses</h4>
-                                                <div class="text-rose-500 font-semibold">Rp. 50,000,000</div>
+                                                <h4 class="text-[15px] font-bold text-slate-700 dark:text-slate-100"><?= Date("F");?> Expenses</h4>
+                                                <div class="text-rose-500 font-semibold">
+                                                    <?php
+                                                        date_default_timezone_set('Asia/Jakarta');
+                                                        $month = Date("m");
+
+                                                        $searchUserId = pg_query($connection, "SELECT user_id FROM users WHERE email = '$email'");
+                                                        if($searchUserId):
+                                                            //change searchUserId into associative array
+                                                            $userRow = pg_fetch_assoc($searchUserId);
+                                                            $user_id = $userRow['user_id'];
+
+                                                            //search data 'amount' with date dan user_id fits the criteria
+                                                            $readDataQuery = pg_query($connection, "SELECT amount FROM transaksi 
+                                                                WHERE EXTRACT(MONTH FROM transaction_date) = '$month' AND user_id = '$user_id' AND transaction_type='Expense'");
+                                                            $rows = pg_fetch_all($readDataQuery);
+
+                                                            //add total amount of all transaction that fits the criteria
+                                                            $total = 0;
+                                                            if(!empty($rows)):
+                                                                foreach($rows as $row):
+                                                                    $total += $row["amount"];
+                                                                endforeach;
+                                                            endif;
+
+                                                            $formattedTotal = "Rp. " . number_format($total, 0, '.', ',');
+                                                            echo $formattedTotal;
+                                                        endif;                                                     
+                                                    ?>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -209,8 +270,37 @@
                                             </div>
             
                                             <div class="mx-5">
-                                                <h4 class="text-[15px] font-bold text-slate-700 dark:text-slate-100">Wednesday Expenses</h4>
-                                                <div class="text-rose-500 font-semibold">Rp. 100,000</div>
+                                                <h4 class="text-[15px] font-bold text-slate-700 dark:text-slate-100"><?= Date("l");?> Expenses</h4>
+                                                <div class="text-rose-500 font-semibold">
+                                                <?php
+                                                        date_default_timezone_set('Asia/Jakarta');
+                                                        $day = Date("l");
+                                                        $dayDate = Date("j");
+
+                                                        $searchUserId = pg_query($connection, "SELECT user_id FROM users WHERE email = '$email'");
+                                                        if($searchUserId):
+                                                            //change searchUserId into associative array
+                                                            $userRow = pg_fetch_assoc($searchUserId);
+                                                            $user_id = $userRow['user_id'];
+
+                                                            //search data 'amount' with date dan user_id fits the criteria
+                                                            $readDataQuery = pg_query($connection, "SELECT amount FROM transaksi 
+                                                                WHERE EXTRACT(DAY FROM transaction_date) = '$dayDate' AND user_id = '$user_id' AND transaction_type='Expense'");
+                                                            $rows = pg_fetch_all($readDataQuery);
+
+                                                            //add total amount of all transaction that fits the criteria
+                                                            $total = 0;
+                                                            if(!empty($rows)):
+                                                                foreach($rows as $row):
+                                                                    $total += $row["amount"];
+                                                                endforeach;
+                                                            endif;
+
+                                                            $formattedTotal = "Rp. " . number_format($total, 0, '.', ',');
+                                                            echo $formattedTotal;
+                                                        endif;                                                     
+                                                    ?>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -308,7 +398,7 @@
                                                     </td>
             
                                                     <td
-                                                        class="px-6 py-4 text-sm leading-5 text-rose-500 font-semibold whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
+                                                        class="px-6 py-4 text-sm leading-5 text-<?php if($row["transaction_type"] == "Expense"){echo "rose";} elseif ($row["transaction_type"] == "Income"){echo "green";} ?>-500 font-semibold whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
                                                         <?php
                                                             $oldAmountFormat = $row["amount"];
                                                             $newFormattedAmount = "Rp. " . number_format($oldAmountFormat, 0, '.', ',');
