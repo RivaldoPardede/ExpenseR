@@ -49,7 +49,7 @@
     </head>
     <body class="bg-slate-100 dark:bg-slate-800 transition duration-300 transform">
         <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
-        <div x-data="{ sidebarOpen: false, transactionForm: false }" class="flex h-screen rounded-r-xl">
+        <div x-data="{ sidebarOpen: false, transactionForm: false, editTransaction: false }" class="flex h-screen rounded-r-xl">
                 <!-- Sidebar-Start -->
                 <section id="sidebar">
                     <div :class="sidebarOpen ? 'block' : 'hidden'" @click="sidebarOpen = false" class="fixed inset-0 z-10 transition-opacity bg-black opacity-50 lg:hidden h-screen"></div>
@@ -311,7 +311,7 @@
                             <h3 class="text-xl mt-8 font-medium text-slate-700 drop-shadow-2xl dark:text-slate-100 text-center">Your Last Transaction</h3>
                             <div class="flex flex-col">
                                 <div class="py-2 sm:py-10 -my-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-                                    <div class="inline-block min-w-full overflow-hidden sm:shadow-xl align-middle sm:rounded-lg">
+                                    <div class="inline-block min-w-full max-h-[46rem] overflow-scroll sm:shadow-xl align-middle sm:rounded-lg">
                                         <table class="min-w-full">
                                             <thead>
                                                 <tr>
@@ -328,6 +328,7 @@
                                                         class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-slate-500 uppercase border-b border-slate-200 bg-slate-50 dark:border-slate-500 dark:bg-slate-600 dark:text-slate-100">
                                                         Value
                                                     </th>
+                                                    <th class="px-6 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-500 dark:bg-slate-600"></th>
                                                     <th class="px-6 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-500 dark:bg-slate-600"></th>
                                                 </tr>
                                             </thead>
@@ -1134,7 +1135,7 @@
             
                                                     <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
                                                         <span
-                                                            class="inline-flex px-2 text-sm font-semibold leading-5 text-slate-900 bg-rose-200 rounded-full"><?= $row["transaction_type"] ?></span>
+                                                            class="inline-flex px-2 text-sm font-semibold leading-5 text-slate-900 bg-<?php if($row["transaction_type"] == "Expense"){echo "rose-200";} elseif ($row["transaction_type"] == "Income"){echo "green-200";} ?> rounded-full"><?= $row["transaction_type"] ?></span>
                                                     </td>
             
                                                     <td
@@ -1148,7 +1149,11 @@
 
                                                     <td
                                                         class="px-6 py-4 text-sm font-medium leading-5 text-right whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                                                        <button @click="editTransaction = true" class="text-indigo-600 hover:text-indigo-900">Edit</button>
+                                                    </td>
+                                                    <td
+                                                        class="px-6 py-4 text-sm font-medium leading-5 text-right whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
+                                                        <button class="text-red-600 hover:text-red-900">Delete</button>
                                                     </td>
                                                 </tr>
                                             <?php   
@@ -1163,6 +1168,111 @@
                                 </div>
                             </div>
                         
+
+                            <!-- Edit Transaction Form - Start -->
+                            <div :class="editTransaction ? 'block' : 'hidden'" @click="editTransaction = false" class="fixed inset-0  transition-opacity bg-black opacity-50  h-screen"></div>
+                            <div :class="editTransaction ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'" class="min-h-screen h-screen w-full inline-block absolute align-middle top-[30%] bg-transparent sm:p-12 max-w-full items-center">
+                                <div class=" max-w-md px-6 py-12 bg-white dark:bg-slate-600 border-0 shadow-xl z-50  mx-auto rounded-xl sm:rounded-3xl">
+                                    <h1 class="text-2xl font-bold mb-8 text-center dark:text-slate-100">Edit Transaction</h1>
+                                    <form id="form" method="post" action="">
+                                        <!-- Category-Start -->
+                                        <div class="relative z-0 w-full mb-5">
+                                            <select
+                                                name="category"
+                                                value=""
+                                                onclick="this.setAttribute('value', this.value);"
+                                                required
+                                                autocomplete="false"
+                                                class="pt-3 pb-2 block w-full px-0 mt-0 border-0 border-b-2 bg-transparent appearance-none z-1 focus:outline-none focus:ring-0 focus:border-black dark:focus:border-white border-gray-200"
+                                            >
+                                            <option value="" selected disabled hidden></option>
+                                            <?php
+                                                $category = pg_fetch_all(pg_query($connection, 'SELECT * FROM category'));
+                                                foreach( $category as $row ){
+                                                    ?>
+                                                    <option value="<?= $row['id'] ?>"><?=$row['category_type']?></option>
+                                                    <?php
+                                                }
+                                            ?>
+                                            </select>
+                                            <label for="select" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500 dark:text-slate-100" dark:text-slate-100>Change Category</label>
+                                        </div>
+                                        <!-- Category-End -->
+
+                                        <!-- Date-Start -->
+                                        <div class="relative z-0 w-full mb-5 border-none outline-none appearance-none" data-te-datepicker-init>
+                                            <input
+                                                type=""
+                                                required
+                                                name="date"
+                                                autocomplete="off"
+                                                class="block w-full bg-transparent pt-3 pb-2 px-0 mt-0 border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 dark:text-white focus:border-black dark:focus:border-white border-gray-200 peer-focus:text-primary"
+                                                placeholder=""/>
+                                                <label for="date" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500 dark:text-slate-100">Change Date</label>
+                                        </div>
+                                        <!-- Date-End -->
+
+                                        <!-- Description-Start -->
+                                        <div class="relative z-0 w-full mb-5">
+                                            <input
+                                                type="text"
+                                                name="description"
+                                                required
+                                                autocomplete="off"
+                                                placeholder=" "
+                                                class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 dark:text-white focus:border-black dark:focus:border-white border-gray-200"
+                                            />
+                                            <label for="description" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500 dark:text-slate-100">Change description</label>
+                                        </div>
+                                        <!-- Description-End -->
+                                
+                                        <!-- Type-Start -->
+                                        <div class="relative z-0 w-full mb-5">
+                                            <select
+                                                name="type"
+                                                value=""
+                                                onclick="this.setAttribute('value', this.value);"
+                                                required
+                                                autocomplete="off"
+                                                class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none z-1 focus:outline-none focus:ring-0 focus:border-black dark:focus:border-white border-gray-200">
+                                                <option value="" selected disabled hidden></option>
+                                                <option value="Expense">Expense</option>
+                                                <option value="Income">Income</option>
+                                            </select>
+                                            <label for="select" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500 dark:text-slate-100">Change Type</label>
+                                        </div>
+                                        <!-- Type-End -->
+                                        
+                                        <!-- Amount-Start -->
+                                        <div class="relative z-0 w-full mb-5">
+                                            <input
+                                                type="number"
+                                                name="amount"
+                                                placeholder=" "
+                                                required
+                                                autocomplete="off"
+                                                class="pt-3 pb-2 pl-7 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 dark:text-white focus:border-black dark:focus:border-white border-gray-200"
+                                            />
+                                            <div class="absolute top-0 left-0 mt-3 ml-1 text-gray-400 dark:text-slate-50">Rp.</div>
+                                            <label for="money" class="absolute duration-300 top-3 left-7 -z-1 origin-0 text-gray-500 dark:text-slate-100">Change Amount</label>
+                                        </div>
+                                        <!-- Amount-End -->
+                                
+                                        <button 
+                                            id="button"
+                                            type="submit"
+                                            name="submit"
+                                            class="rounded w-full px-6 py-3 overflow-hidden group text-lg bg-primary shadow-lg shadow-primary/50 relative hover:bg-gradient-to-r hover:from-primary hover:to-green-500 text-white hover:ring-2 hover:ring-offset-2 hover:ring-green-400 transition-all ease-out duration-300">
+                                            <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-[28rem] ease"></span>
+                                            <span class="relative">Add</span>
+                                        <button/>
+                                    </form>
+                                </div>
+
+                            </div>
+                            <!-- Edit Transaction FOrm - End -->
+
+                            <!-- Transaction Form - Start -->
                             <div :class="transactionForm ? 'block' : 'hidden'" @click="transactionForm = false" class="fixed inset-0  transition-opacity bg-black opacity-50  h-screen"></div>
                             <div :class="transactionForm ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'" class="min-h-screen h-screen w-full inline-block absolute align-middle top-[30%] bg-transparent sm:p-12 max-w-full items-center">
                                 <div class=" max-w-md px-6 py-12 bg-white dark:bg-slate-600 border-0 shadow-xl z-50  mx-auto rounded-xl sm:rounded-3xl">
@@ -1191,23 +1301,6 @@
                                             <label for="select" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500 dark:text-slate-100" dark:text-slate-100>Category</label>
                                         </div>
                                         <!-- Category-End -->
-                                        
-                                        <!-- Custom Dropdown -->
-                                        <!-- <div class="relative z-0 w-full mb-5 bg-slate-400">
-                                            <div class="flex-none p-2">
-                                                <button onclick="showDropdownOptions()" class="flex flex-row justify-between w-48 px-2 py-2 text-gray-700 bg-white border-2 border-white rounded-md shadow focus:outline-none focus:border-blue-600">
-                                                    <span class="select-none">Select an item</span>
-                                        
-                                                    <svg id="arrow-down" class="hidden w-6 h-6 stroke-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
-                                                    <svg id="arrow-up" class="w-6 h-6 stroke-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
-                                                </button>
-                                                <div id="options" class="hidden w-48 py-2 mt-2 bg-white rounded-lg shadow-xl absolute z-999">
-                                                    <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white">Item 1</a>
-                                                    <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white">Item 2</a>
-                                                    <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white">Item 3</a>
-                                                </div>
-                                            </div>
-                                        </div> -->
 
                                         <!-- Date-Start -->
                                         <div class="relative z-0 w-full mb-5 border-none outline-none appearance-none" data-te-datepicker-init>
@@ -1280,6 +1373,9 @@
                                 </div>
 
                             </div>
+                            <!-- Transaction Form - End -->
+
+                            <!-- Add Transaction Button -->
                             <div class="fixed right-8 bottom-8">
                                 <button @click="transactionForm = true" class="rounded-full p-3 lg:p-5 shadow-lg shadow-primary/50 overflow-hidden group bg-primary relative hover:bg-gradient-to-r hover:from-primary hover:to-green-500 text-white hover:ring-2 hover:ring-offset-2 hover:ring-green-400 transition-all ease-out duration-300">
                                     <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
@@ -1301,12 +1397,12 @@
                                     </span>
                                 <button/>
                             </div>
-  
-
+                            <!-- Add Transaction Button -->
+                        </div>
+                            
                         </div>
                     </span>
                 </section>
-                <!-- Main-End -->
             </div>
 
         <script src="../../src/js/transaction.js"></script>
