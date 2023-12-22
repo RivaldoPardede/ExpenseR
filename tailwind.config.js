@@ -1,4 +1,5 @@
 module.exports = {
+  // important: '#datepicker',
   content: [
               './public/**/*.{html,js,php}',
               "./node_modules/tw-elements/dist/js/**/*.js",

@@ -314,7 +314,7 @@
                             <h3 class="text-xl mt-8 font-medium text-slate-700 drop-shadow-2xl dark:text-slate-100 text-center">Your Last Transaction</h3>
                             <div class="flex flex-col">
                                 <div class="py-2 sm:py-10 -my-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-                                    <div class="inline-block min-w-full overflow-hidden sm:shadow-xl align-middle sm:rounded-lg">
+                                    <div class="inline-block min-w-full max-h-[46rem] overflow-scroll sm:shadow-xl align-middle sm:rounded-lg">
                                         <table class="min-w-full">
                                             <thead>
                                                 <tr>
@@ -331,6 +331,7 @@
                                                         class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-slate-500 uppercase border-b border-slate-200 bg-slate-50 dark:border-slate-500 dark:bg-slate-600 dark:text-slate-100">
                                                         Value
                                                     </th>
+                                                    <th class="px-6 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-500 dark:bg-slate-600"></th>
                                                     <th class="px-6 py-3 border-b border-slate-200 bg-slate-50 dark:border-slate-500 dark:bg-slate-600"></th>
                                                 </tr>
                                             </thead>
@@ -394,7 +395,7 @@
             
                                                     <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
                                                         <span
-                                                            class="inline-flex px-2 text-sm font-semibold leading-5 text-slate-900 bg-rose-200 rounded-full"><?= $row["transaction_type"] ?></span>
+                                                            class="inline-flex px-2 text-sm font-semibold leading-5 text-slate-900 bg-<?php if($row["transaction_type"] == "Expense"){echo "rose-200";} elseif ($row["transaction_type"] == "Income"){echo "green-200";} ?> rounded-full"><?= $row["transaction_type"] ?></span>
                                                     </td>
             
                                                     <td
@@ -408,7 +409,11 @@
 
                                                     <td
                                                         class="px-6 py-4 text-sm font-medium leading-5 text-right whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                                                        <button class="text-indigo-600 hover:text-indigo-900">Edit</button>
+                                                    </td>
+                                                    <td
+                                                        class="px-6 py-4 text-sm font-medium leading-5 text-right whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
+                                                        <button class="text-red-600 hover:text-red-900">Delete</button>
                                                     </td>
                                                 </tr>
                                             <?php   
@@ -451,23 +456,6 @@
                                             <label for="select" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500 dark:text-slate-100" dark:text-slate-100>Category</label>
                                         </div>
                                         <!-- Category-End -->
-                                        
-                                        <!-- Custom Dropdown -->
-                                        <!-- <div class="relative z-0 w-full mb-5 bg-slate-400">
-                                            <div class="flex-none p-2">
-                                                <button onclick="showDropdownOptions()" class="flex flex-row justify-between w-48 px-2 py-2 text-gray-700 bg-white border-2 border-white rounded-md shadow focus:outline-none focus:border-blue-600">
-                                                    <span class="select-none">Select an item</span>
-                                        
-                                                    <svg id="arrow-down" class="hidden w-6 h-6 stroke-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
-                                                    <svg id="arrow-up" class="w-6 h-6 stroke-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
-                                                </button>
-                                                <div id="options" class="hidden w-48 py-2 mt-2 bg-white rounded-lg shadow-xl absolute z-999">
-                                                    <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white">Item 1</a>
-                                                    <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white">Item 2</a>
-                                                    <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white">Item 3</a>
-                                                </div>
-                                            </div>
-                                        </div> -->
 
                                         <!-- Date-Start -->
                                         <div class="relative z-0 w-full mb-5 border-none outline-none appearance-none" data-te-datepicker-init>
@@ -561,12 +549,11 @@
                                     </span>
                                 <button/>
                             </div>
-  
-
+                        </div>
+                            
                         </div>
                     </span>
                 </section>
-                <!-- Main-End -->
             </div>
 
         <script src="../../src/js/transaction.js"></script>

@@ -236,23 +236,23 @@
                                                             </div>
             
                                                             <div class="ml-4">
-                                                                <div class="text-sm font-medium leading-5 dark:text-slate-100">Food/Drink</div>
+                                                                <div class="text-sm font-medium leading-5 dark:text-slate-100">Other</div>
                                                             </div>
                                                         </div>
                                                     </td>
             
                                                     <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <div class="text-sm leading-5 text-slate-900 dark:text-slate-100">Eating Something</div>
+                                                        <div class="text-sm leading-5 text-slate-900 dark:text-slate-100">Epic Income</div>
                                                         <div class="text-sm leading-5 dark:text-slate-300 text-slate-500">18-12-2023</div>
                                                     </td>
             
                                                     <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
                                                         <span
-                                                            class="inline-flex px-2 text-sm font-semibold leading-5 text-slate-900 bg-rose-200 rounded-full">Expenses</span>
+                                                            class="inline-flex px-2 text-sm font-semibold leading-5 text-slate-900 bg-green-200 rounded-full">Income</span>
                                                     </td>
             
                                                     <td
-                                                        class="px-6 py-4 text-sm leading-5 text-rose-500 font-semibold whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
+                                                        class="px-6 py-4 text-sm leading-5 text-green-500 font-semibold whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
                                                         Rp. 30,000
                                                     </td>
                                                 </tr>
@@ -443,5 +443,6 @@
             
         <script src="../../src/js/dashboard.js"></script>
         <script src="../../src/js/main.js"></script>
+        <script src="../../src/js/TWE.js"></script>
     </body>
 </html>
