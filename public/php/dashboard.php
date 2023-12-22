@@ -158,7 +158,7 @@
                                                         $formattedTotal = "Rp. " . number_format($total, 0, '.', ',');
                                                 ?>
 
-                                                <div class="text-green-500 font-semibold">
+                                                <div class="text-<?php if($total >= 0){echo "green";} else{echo "rose";} ?>-500 font-semibold">
                                                 <?php
                                                         echo $formattedTotal;
                                                     endif;           

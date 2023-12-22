@@ -308,7 +308,7 @@
                             
                             <hr class="my-8">
     
-                            <h3 class="text-xl mt-8 font-medium text-slate-700 drop-shadow-2xl dark:text-slate-100 text-center">Your Last Transaction</h3>
+                            <h3 class="text-xl mt-8 font-medium text-slate-700 drop-shadow-2xl dark:text-slate-100 text-center">Your Transactions</h3>
                             <div class="flex flex-col">
                                 <div class="py-2 sm:py-10 -my-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
                                     <div class="inline-block min-w-full max-h-[46rem] overflow-scroll sm:shadow-xl align-middle sm:rounded-lg">
@@ -1153,7 +1153,10 @@
                                                     </td>
                                                     <td
                                                         class="px-6 py-4 text-sm font-medium leading-5 text-right whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <button class="text-red-600 hover:text-red-900">Delete</button>
+                                                        <form action="../../src/php/delete.php" method="post">
+                                                            <input type="hidden" name="id" value="<?= $row["id"] ?>" /> <!-- Hidden input with item ID -->
+                                                            <button class="text-red-600 hover:text-red-900" name="delete">Delete</button>
+                                                        </form>
                                                     </td>
                                                 </tr>
                                             <?php   
