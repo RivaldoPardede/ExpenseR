@@ -1,14 +1,11 @@
 <?php
     session_start();
+    include '../../src/php/koneksi.php';
 
     if(!isset($_SESSION['email'])) {
         header("Location: ../index.php");
         exit;
-    }
-    
-    include '../../src/php/koneksi.php';
-
-    if(isset($_SESSION['email'])){
+    } else{
         $email = $_SESSION['email'];
         if(isset($_POST["submit"])){
             //catch all user's inputs into their own variable
@@ -348,8 +345,8 @@
                                                         foreach($rows as $row):
                                                         $category_id = $row["category_id"];
                                                         $searchCategory = pg_query($connection, "SELECT category_type FROM category WHERE id = '$category_id'");
-                                                        $category = pg_fetch_array($searchCategory)[0];?>
-                                                         
+                                                        $category = pg_fetch_array($searchCategory)[0];
+                                            ?>
                                                 <tr>
                                                     <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
                                                         <div class="flex items-center">
