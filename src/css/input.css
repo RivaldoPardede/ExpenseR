@@ -10,99 +10,19 @@
     transform-origin: 0%;
 }
 
-.modal2 {
-    pointer-events: none;
-    position: fixed;
-    inset: 0px;
-    margin: 0px;
-    display: grid;
-    height: 100%;
-    max-height: none;
-    width: 100%;
-    max-width: none;
-    justify-items: center;
-    padding: 0px;
-    opacity: 0;
-    overscroll-behavior: contain;
-    background-color: transparent;
-    color: inherit;
-    z-index: -1;
-    transition-duration: 200ms;
-    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
-    transition-property: transform, opacity, visibility;
-    overflow-y: hidden;
-}
-
-:where(.modal2) {
-    align-items: center;
-}
-
-.modal-box2 {
-    max-height: calc(100vh - 5em);
-    grid-column-start: 1;
-    grid-row-start: 1;
-    width: 91.666667%;
-    max-width: 32rem;
-    --tw-scale-x: 0.9;
-    --tw-scale-y: 0.9;
-    transform: translate(var(--tw-translate-x), var(--tw-translate-y))
-        rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y))
-        scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-    border-bottom-right-radius: var(--rounded-box, 1rem);
-    border-bottom-left-radius: var(--rounded-box, 1rem);
-    border-top-left-radius: var(--rounded-box, 1rem);
-    border-top-right-radius: var(--rounded-box, 1rem);
+.bg-rose-200 {
     --tw-bg-opacity: 1;
-    background-color: var(
-        --fallback-b1,
-        oklch(var(--b1) / var(--tw-bg-opacity))
-    );
-    padding: 1.5rem;
-    transition-property: color, background-color, border-color,
-        text-decoration-color, fill, stroke, opacity, box-shadow, transform,
-        filter, -webkit-backdrop-filter;
-    transition-property: color, background-color, border-color,
-        text-decoration-color, fill, stroke, opacity, box-shadow, transform,
-        filter, backdrop-filter;
-    transition-property: color, background-color, border-color,
-        text-decoration-color, fill, stroke, opacity, box-shadow, transform,
-        filter, backdrop-filter, -webkit-backdrop-filter;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
-    transition-duration: 200ms;
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;
-    overflow-y: auto;
-    overscroll-behavior: contain;
+    background-color: rgb(254 205 211 / var(--tw-bg-opacity));
 }
 
-.modal-open,
-.modal2:target,
-.modal-toggle:checked + .modal2,
-.modal2[open] {
-    pointer-events: auto;
-    visibility: visible;
-    opacity: 1;
+.bg-green-200 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(188 240 218 / var(--tw-bg-opacity));
 }
 
-.modal-action {
-    display: flex;
-    margin-top: 1.5rem;
-    justify-content: flex-end;
-}
-
-:root:has(
-        :is(
-                .modal-open,
-                .modal2:target,
-                .modal-toggle:checked + .modal2,
-                .modal2[open]
-            )
-    ) {
-    overflow: hidden;
-}
-
-.data-\[te-datepicker-cell\]\:z-9999[data-te-datepicker-cell] {
-    z-index: 9999 !important;
+.text-primary {
+    --tw-text-opacity: 1;
+    color: rgb(21 134 70 / var(--tw-text-opacity));
 }
 
 input:focus ~ label,

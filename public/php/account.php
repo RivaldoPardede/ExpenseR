@@ -175,6 +175,7 @@
                             <h3 class="text-2xl font-semibold mt-4 text-slate-700 pb-3 border-b-2 drop-shadow-2xl dark:text-slate-100 text-center">Account Settings</h3>
 
                             <div class="container flex align-middle items-center mt-5 flex-col">
+
                                 <section class="my-4" id="changeUsername">
                                     <button class="btn rounded px-5 border-none py-2.5 overflow-hidden group bg-primary relative hover:bg-gradient-to-r hover:from-green-500 hover:to-green-400 text-white hover:ring-2 hover:ring-offset-2 hover:ring-green-400 transition-all ease-out duration-300" onclick="my_modal_5.showModal()">Change Username
                                         <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
@@ -268,6 +269,53 @@
                                                             if ($oldPassword === $d['password']) {
                                                                 pg_query($connection, "UPDATE users SET password = '$newPassword' WHERE email = '$email'");
                                                             echo "<script>window.location.href = 'account.php'</script>";    
+                                                            } else {
+                                                                echo "<script>alert('Wrong PW')</script>";
+                                                            }   
+                                                        }
+                                                    ?>
+
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </dialog>
+                                </section>
+
+                                <section class="my-4" id="deleteAccount">
+                                    <button class="btn rounded px-5 border-none py-2.5 overflow-hidden group bg-primary relative hover:bg-gradient-to-r hover:from-green-500 hover:to-green-400 text-white hover:ring-2 hover:ring-offset-2 hover:ring-green-400 transition-all ease-out duration-300" onclick="my_modal_8.showModal()">Delete Account
+                                        <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
+                                    </button>
+                                    <dialog id="my_modal_8" class="modal modal-bottom sm:modal-middle">
+                                        <div class="modal-box bg-white dark:bg-slate-600">
+                                            <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100 pb-5 text-center border-b ">Delete Account</h3>
+                                            <div class="modal-action flex flex-shrink w-full justify-center mx-0">
+                                                <form method="POST">
+                                                    <div class="w-full" id="deleteAccount">
+                                                        <label class="form-control w-96">
+                                                            <div class="label">
+                                                                <span class="label-text font-semibold text-slate-800 dark:text-slate-100">Password</span>
+                                                            </div>
+                                                            <input type="password" placeholder="Your Password" name="password" required class="input w-full  bg-slate-300 dark:bg-slate-100" />
+                                                        </label>
+                                                        <div class="flex mt-4 justify-between">
+                                                            <button name="deleteAccount" class="btn rounded px-5 border-none py-2.5 overflow-hidden group bg-primary relative hover:bg-gradient-to-r hover:from-green-500 hover:to-green-400 text-white hover:ring-2 hover:ring-offset-2 hover:ring-green-400 transition-all ease-out duration-300 shadow-xl shadow-primary/50" onclick="my_modal_8.showModal()">Save
+                                                                <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
+                                                            </button>
+                                                            <a href="account.php" class="btn rounded px-5 border-none py-2.5 overflow-hidden group bg-primary relative hover:bg-gradient-to-r hover:from-green-500 hover:to-green-400 text-white hover:ring-2 hover:ring-offset-2 hover:ring-green-400 transition-all ease-out duration-300 shadow-xl shadow-primary/50" onclick="my_modal_8.showModal()">Cancel
+                                                                <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+
+                                                    <?php 
+                                                        if (isset($_POST['deleteAccount'])) {
+                                                            $password = $_POST['password'];
+                                                            $email = $_SESSION['email'];
+
+                                                            if ($password === $d['password']) {
+                                                                pg_query($connection, "DELETE FROM transaksi USING users WHERE transaksi.user_id = users.user_id AND users.email = '$email'");
+                                                                pg_query($connection, "DELETE FROM users WHERE email = '$email'");
+                                                                echo "<script>window.location.href = '../../src/php/signout.php'</script>";    
                                                             } else {
                                                                 echo "<script>alert('Wrong PW')</script>";
                                                             }   

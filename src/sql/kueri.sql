@@ -25,6 +25,8 @@ CREATE TABLE transaksi (
     CONSTRAINT FK_user FOREIGN KEY (user_id) REFERENCES users(user_id),
     CONSTRAINT FK_category FOREIGN KEY (category_id) REFERENCES category(id)
 );
+
+
 INSERT INTO category (id, category_type)
     VALUES (1, 'Food/Drink'),
         (2, 'Transportation'),

@@ -158,7 +158,7 @@
                                                         $formattedTotal = "Rp. " . number_format($total, 0, '.', ',');
                                                 ?>
 
-                                                <div class="text-<?php if($total >= 0){echo "green";} else{echo "rose";} ?>-500 font-semibold">
+                                                <div class="text-<?php if($total >= 0) {?>primary<?php } else{ ?>rose-500<?php } ?> font-semibold">
                                                 <?php
                                                         echo $formattedTotal;
                                                     endif;           
@@ -242,7 +242,7 @@
                                             </div>
             
                                             <div class="mx-5">
-                                                <h4 class="text-[15px] font-bold text-slate-700 dark:text-slate-100"><?= Date("l");?> Expenses</h4>
+                                                <h4 class="text-[15px] font-bold text-slate-700  dark:text-slate-100"><?= Date("l");?> Expenses</h4>
                                                 <div class="text-rose-500 font-semibold">
                                                     <?php
                                                         date_default_timezone_set('Asia/Jakarta');
@@ -1107,11 +1107,12 @@
             
                                                     <td class="px-6 py-4 whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
                                                         <span
-                                                            class="inline-flex px-2 text-sm font-semibold leading-5 text-slate-900 bg-<?php if($row["transaction_type"] == "Expense"){echo "rose";} elseif ($row["transaction_type"] == "Income"){echo "green";} ?>-200 rounded-full"><?= $row["transaction_type"] ?></span>
+                                                        class="inline-flex px-2 text-sm font-semibold leading-5 text-slate-900 bg-<?php if($row["transaction_type"] == "Expense"){echo "rose-200";} elseif ($row["transaction_type"] == "Income"){echo "green-200";} ?> rounded-full"><?= $row["transaction_type"] ?></span>
+                                                        </span>
                                                     </td>
             
                                                     <td
-                                                        class="px-6 py-4 text-sm leading-5 text-<?php if($row["transaction_type"] == "Expense"){echo "rose";} elseif ($row["transaction_type"] == "Income"){echo "green";} ?>-500 font-semibold whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
+                                                        class="px-6 py-4 text-sm leading-5 text-<?php if($row["transaction_type"] == "Expense"){echo "rose-500";} elseif ($row["transaction_type"] == "Income"){echo "primary";} ?> font-semibold whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
                                                         <?php
                                                             $oldAmountFormat = $row["amount"];
                                                             $newFormattedAmount = "Rp. " . number_format($oldAmountFormat, 0, '.', ',');
