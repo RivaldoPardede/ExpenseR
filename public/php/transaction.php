@@ -52,7 +52,7 @@
     </head>
     <body class="bg-slate-100 dark:bg-slate-800 transition duration-300 transform">
         <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
-        <div x-data="{ sidebarOpen: false, transactionForm: false }" class="flex h-screen rounded-r-xl">
+        <div x-data="{ sidebarOpen: false, transactionForm: false, editTransaction: false }" class="flex h-screen rounded-r-xl">
                 <!-- Sidebar-Start -->
                 <section id="sidebar">
                     <div :class="sidebarOpen ? 'block' : 'hidden'" @click="sidebarOpen = false" class="fixed inset-0 z-10 transition-opacity bg-black opacity-50 lg:hidden h-screen"></div>
@@ -409,7 +409,7 @@
 
                                                     <td
                                                         class="px-6 py-4 text-sm font-medium leading-5 text-right whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
-                                                        <button class="text-indigo-600 hover:text-indigo-900">Edit</button>
+                                                        <button @click="editTransaction = true" class="text-indigo-600 hover:text-indigo-900">Edit</button>
                                                     </td>
                                                     <td
                                                         class="px-6 py-4 text-sm font-medium leading-5 text-right whitespace-no-wrap border-b border-slate-200 dark:border-slate-500">
@@ -428,6 +428,111 @@
                                 </div>
                             </div>
                         
+
+                            <!-- Edit Transaction Form - Start -->
+                            <div :class="editTransaction ? 'block' : 'hidden'" @click="editTransaction = false" class="fixed inset-0  transition-opacity bg-black opacity-50  h-screen"></div>
+                            <div :class="editTransaction ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'" class="min-h-screen h-screen w-full inline-block absolute align-middle top-[30%] bg-transparent sm:p-12 max-w-full items-center">
+                                <div class=" max-w-md px-6 py-12 bg-white dark:bg-slate-600 border-0 shadow-xl z-50  mx-auto rounded-xl sm:rounded-3xl">
+                                    <h1 class="text-2xl font-bold mb-8 text-center dark:text-slate-100">Edit Transaction</h1>
+                                    <form id="form" method="post" action="">
+                                        <!-- Category-Start -->
+                                        <div class="relative z-0 w-full mb-5">
+                                            <select
+                                                name="category"
+                                                value=""
+                                                onclick="this.setAttribute('value', this.value);"
+                                                required
+                                                autocomplete="false"
+                                                class="pt-3 pb-2 block w-full px-0 mt-0 border-0 border-b-2 bg-transparent appearance-none z-1 focus:outline-none focus:ring-0 focus:border-black dark:focus:border-white border-gray-200"
+                                            >
+                                            <option value="" selected disabled hidden></option>
+                                            <?php
+                                                $category = pg_fetch_all(pg_query($connection, 'SELECT * FROM category'));
+                                                foreach( $category as $row ){
+                                                    ?>
+                                                    <option value="<?= $row['id'] ?>"><?=$row['category_type']?></option>
+                                                    <?php
+                                                }
+                                            ?>
+                                            </select>
+                                            <label for="select" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500 dark:text-slate-100" dark:text-slate-100>Change Category</label>
+                                        </div>
+                                        <!-- Category-End -->
+
+                                        <!-- Date-Start -->
+                                        <div class="relative z-0 w-full mb-5 border-none outline-none appearance-none" data-te-datepicker-init>
+                                            <input
+                                                type=""
+                                                required
+                                                name="date"
+                                                autocomplete="off"
+                                                class="block w-full bg-transparent pt-3 pb-2 px-0 mt-0 border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 dark:text-white focus:border-black dark:focus:border-white border-gray-200 peer-focus:text-primary"
+                                                placeholder=""/>
+                                                <label for="date" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500 dark:text-slate-100">Change Date</label>
+                                        </div>
+                                        <!-- Date-End -->
+
+                                        <!-- Description-Start -->
+                                        <div class="relative z-0 w-full mb-5">
+                                            <input
+                                                type="text"
+                                                name="description"
+                                                required
+                                                autocomplete="off"
+                                                placeholder=" "
+                                                class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 dark:text-white focus:border-black dark:focus:border-white border-gray-200"
+                                            />
+                                            <label for="description" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500 dark:text-slate-100">Change description</label>
+                                        </div>
+                                        <!-- Description-End -->
+                                
+                                        <!-- Type-Start -->
+                                        <div class="relative z-0 w-full mb-5">
+                                            <select
+                                                name="type"
+                                                value=""
+                                                onclick="this.setAttribute('value', this.value);"
+                                                required
+                                                autocomplete="off"
+                                                class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none z-1 focus:outline-none focus:ring-0 focus:border-black dark:focus:border-white border-gray-200">
+                                                <option value="" selected disabled hidden></option>
+                                                <option value="Expense">Expense</option>
+                                                <option value="Income">Income</option>
+                                            </select>
+                                            <label for="select" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500 dark:text-slate-100">Change Type</label>
+                                        </div>
+                                        <!-- Type-End -->
+                                        
+                                        <!-- Amount-Start -->
+                                        <div class="relative z-0 w-full mb-5">
+                                            <input
+                                                type="number"
+                                                name="amount"
+                                                placeholder=" "
+                                                required
+                                                autocomplete="off"
+                                                class="pt-3 pb-2 pl-7 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 dark:text-white focus:border-black dark:focus:border-white border-gray-200"
+                                            />
+                                            <div class="absolute top-0 left-0 mt-3 ml-1 text-gray-400 dark:text-slate-50">Rp.</div>
+                                            <label for="money" class="absolute duration-300 top-3 left-7 -z-1 origin-0 text-gray-500 dark:text-slate-100">Change Amount</label>
+                                        </div>
+                                        <!-- Amount-End -->
+                                
+                                        <button 
+                                            id="button"
+                                            type="submit"
+                                            name="submit"
+                                            class="rounded w-full px-6 py-3 overflow-hidden group text-lg bg-primary shadow-lg shadow-primary/50 relative hover:bg-gradient-to-r hover:from-primary hover:to-green-500 text-white hover:ring-2 hover:ring-offset-2 hover:ring-green-400 transition-all ease-out duration-300">
+                                            <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-[28rem] ease"></span>
+                                            <span class="relative">Add</span>
+                                        <button/>
+                                    </form>
+                                </div>
+
+                            </div>
+                            <!-- Edit Transaction FOrm - End -->
+
+                            <!-- Transaction Form - Start -->
                             <div :class="transactionForm ? 'block' : 'hidden'" @click="transactionForm = false" class="fixed inset-0  transition-opacity bg-black opacity-50  h-screen"></div>
                             <div :class="transactionForm ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'" class="min-h-screen h-screen w-full inline-block absolute align-middle top-[30%] bg-transparent sm:p-12 max-w-full items-center">
                                 <div class=" max-w-md px-6 py-12 bg-white dark:bg-slate-600 border-0 shadow-xl z-50  mx-auto rounded-xl sm:rounded-3xl">
@@ -528,6 +633,9 @@
                                 </div>
 
                             </div>
+                            <!-- Transaction Form - End -->
+
+                            <!-- Add Transaction Button -->
                             <div class="fixed right-8 bottom-8">
                                 <button @click="transactionForm = true" class="rounded-full p-3 lg:p-5 shadow-lg shadow-primary/50 overflow-hidden group bg-primary relative hover:bg-gradient-to-r hover:from-primary hover:to-green-500 text-white hover:ring-2 hover:ring-offset-2 hover:ring-green-400 transition-all ease-out duration-300">
                                     <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
@@ -549,6 +657,7 @@
                                     </span>
                                 <button/>
                             </div>
+                            <!-- Add Transaction Button -->
                         </div>
                             
                         </div>
