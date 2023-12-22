@@ -3834,6 +3834,54 @@ details.collapse summary::-webkit-details-marker {
   top: 100%;
 }
 
+.bottom-10 {
+  bottom: 2.5rem;
+}
+
+.bottom-\[\] {
+  bottom: ;
+}
+
+.bottom-\[200px\] {
+  bottom: 200px;
+}
+
+.top-10 {
+  top: 2.5rem;
+}
+
+.top-20 {
+  top: 5rem;
+}
+
+.top-24 {
+  top: 6rem;
+}
+
+.top-\[120px\] {
+  top: 120px;
+}
+
+.top-\[130px\] {
+  top: 130px;
+}
+
+.top-\[180px\] {
+  top: 180px;
+}
+
+.top-\[200px\] {
+  top: 200px;
+}
+
+.top-\[210px\] {
+  top: 210px;
+}
+
+.top-\[220px\] {
+  top: 220px;
+}
+
 .\!z-40 {
   z-index: 40 !important;
 }
@@ -4010,6 +4058,11 @@ details.collapse summary::-webkit-details-marker {
 .my-\[5px\] {
   margin-top: 5px;
   margin-bottom: 5px;
+}
+
+.my-auto {
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .-ml-2 {
@@ -4685,6 +4738,10 @@ details.collapse summary::-webkit-details-marker {
   flex-shrink: 0;
 }
 
+.flex-grow-0 {
+  flex-grow: 0;
+}
+
 .grow {
   flex-grow: 1;
 }
@@ -5106,6 +5163,10 @@ details.collapse summary::-webkit-details-marker {
 
 .items-center {
   align-items: center;
+}
+
+.items-stretch {
+  align-items: stretch;
 }
 
 .justify-end {
@@ -5667,6 +5728,26 @@ details.collapse summary::-webkit-details-marker {
 .bg-zinc-700 {
   --tw-bg-opacity: 1;
   background-color: rgb(63 63 70 / var(--tw-bg-opacity));
+}
+
+.bg-slate-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(100 116 139 / var(--tw-bg-opacity));
+}
+
+.bg-slate-800 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(30 41 59 / var(--tw-bg-opacity));
+}
+
+.bg-green-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(14 159 110 / var(--tw-bg-opacity));
+}
+
+.bg-slate-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(226 232 240 / var(--tw-bg-opacity));
 }
 
 .bg-contain {
@@ -6587,6 +6668,11 @@ details.collapse summary::-webkit-details-marker {
 
 .shadow-primary\/50 {
   --tw-shadow-color: rgb(21 134 70 / 0.5);
+  --tw-shadow: var(--tw-shadow-colored);
+}
+
+.shadow-slate-500\/50 {
+  --tw-shadow-color: rgb(100 116 139 / 0.5);
   --tw-shadow: var(--tw-shadow-colored);
 }
 
@@ -8681,6 +8767,22 @@ select:focus ~ label {
 
   .lg\:inset-0 {
     inset: 0px;
+  }
+
+  .lg\:top-10 {
+    top: 2.5rem;
+  }
+
+  .lg\:top-\[150px\] {
+    top: 150px;
+  }
+
+  .lg\:top-\[110px\] {
+    top: 110px;
+  }
+
+  .lg\:top-\[100px\] {
+    top: 100px;
   }
 
   .lg\:-mx-8 {
